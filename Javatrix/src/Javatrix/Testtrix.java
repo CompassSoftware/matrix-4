@@ -1,3 +1,4 @@
+package Javatrix;
 import Javatrix.*;
 
 public class Testtrix {
