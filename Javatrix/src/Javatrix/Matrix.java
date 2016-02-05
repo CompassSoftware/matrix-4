@@ -2,6 +2,7 @@ package Javatrix;
 
 public class Matrix 
 {
+	private double[][] matrix;
 
 	public Matrix(double[][] A)
 	{
