@@ -116,7 +116,7 @@ public class Matrix
 		int col = 0;
 		for (int i = 0; i < matrix.length; i++) {
 			sum += matrix[i][col];
-			col++;
+			col += 1;
 		}
 		return sum;
 	}
