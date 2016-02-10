@@ -6,7 +6,6 @@ public class Matrix
 	private double[][] matrix;
 	private int m;
 	private int n;
-	private static Random r = new Random();
 	
 	/*
 	 * Constructor that checks arguments on basis that all rows need to be
@@ -18,6 +17,9 @@ public class Matrix
 	{
 		this.m = A.length;
 		this.n = A[0].length;
+		for (int i = 1; i < m; i++) {
+			if(A[i].length != n) throw new java.lang.IllegalArgumentException();
+		}
 		this.matrix = new double[m][n];
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
@@ -26,11 +28,18 @@ public class Matrix
 		}
 		
 	}
-	// Not sure about this one
+	
+	/*
+	 * Attempts to create a new Matrix object quickly, without checking input parameters.
+	 * 
+	 * @param A - 2D array from which to construct the matrix
+	 * @param m - Number of rows
+	 * @param n - Number of columns
+	 */
 	public Matrix(double[][] A, int m, int n)
 	{
 		this.m = m;
-		this.n =  n;
+		this.n = n;
 		this.matrix = new double[m][n];
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
@@ -39,48 +48,75 @@ public class Matrix
 		}
 	}
 	
-	public Matrix(double[] vals, int m)
+	public Matrix(double[] vals, int m) throws IllegalArgumentException
 	{
-		
+		if(vals.length%m != 0) throw new IllegalArgumentException();
+		else {
+			this.m = m;
+			this.n = vals.length/m;
+			this.matrix = new double[m][n];
+			for (int i = 0; i < m; i++) {
+				for (int j = 0; j < n; j++) {
+					matrix[i][j] = vals[i*n+j];
+				}
+			}
+		}
 	}
 	
+	/*
+	 * Creates a new Matrix object of the specified size, filled with zeros.
+	 * 
+	 * @param m - Number of rows
+	 * @param n - Number of columns
+	 */
 	public Matrix(int m, int n)
 	{
 		this.matrix = new double[m][n];
+		this.m = m;
+		this.n = n;
 	}
 	
+	/*
+	 * Creates a new Matrix object of the specified size, filled with the specified value.
+	 * 
+	 * @param m - Number of rows
+	 * @param n - Number of columns
+	 * @param s - Value to fill the Matrix with
+	 */
 	public Matrix(int m, int n, double s)
 	{
-		this.matrix = new double[m][n];
+		this(m, n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
 				matrix[i][j] = s;
 			}
 		}
 	}
+	
 	/*
 	 * copy - makes a deep copy of a matrix
 	 */
 	public Matrix copy() {
-		int row = matrix.length;
-		int col = matrix[0].length;
-		Matrix M = new Matrix(row, col);
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < col; j++) {
+		Matrix M = new Matrix(m, n);
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
 				M.matrix[i][j] = matrix[i][j];
 			}
 		}
 		return M;
 	}
+	
 	/*
 	 * get - returns a specific element from the matrix
 	 * 
 	 * @param i - row index
 	 * @param j - column index
 	 */
-	public double get(int i, int j) {
-		return matrix[i][j];
+	public double get(int i, int j) throws ArrayIndexOutOfBoundsException {
+		if(i >= 0 && i < m && j >= 0 && j < n) return matrix[i][j];
+		else throw new ArrayIndexOutOfBoundsException();
 	}
+	
 	/*
 	 * set - sets a single element of the matrix to a specific double value
 	 * 
@@ -88,9 +124,11 @@ public class Matrix
 	 * @param j - column index
 	 * @param s - double value to set the matrix element to.
 	 */
-	public void set(int i, int j, double s) throws java.lang.ArrayIndexOutOfBoundsException {
-		matrix[i][j] = s;
+	public void set(int i, int j, double s) throws ArrayIndexOutOfBoundsException {
+		if(i >= 0 && i < m && j >= 0 && j < n) matrix[i][j] = s;
+		else throw new ArrayIndexOutOfBoundsException();
 	}
+	
 	/*
 	 * random - generates a matrix with random elements
 	 * 
@@ -98,14 +136,16 @@ public class Matrix
 	 * @param - n - number of columns
 	 */
 	public static Matrix random(int m, int n) {
+		Random r = new Random();
 		Matrix M = new Matrix(m,n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				M.matrix[i][j] = r.nextInt();
+				M.matrix[i][j] = r.nextDouble();
 			}
 		}
 		return M;	
 	}
+	
 	/*
 	 * trace - returns the sum of the diagonal of the matrix
 	 * 
@@ -113,10 +153,8 @@ public class Matrix
 	 */
 	public double trace() {
 		double sum = 0;
-		int col = 0;
-		for (int i = 0; i < matrix.length; i++) {
-			sum += matrix[i][col];
-			col += 1;
+		for (int i = 0; i < m && i < n; i++) {
+			sum += matrix[i][i];
 		}
 		return sum;
 	}
