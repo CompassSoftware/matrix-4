@@ -113,11 +113,10 @@ public class Matrix
 	 */
 	public double trace() {
 		double sum = 0;
+		int col = 0;
 		for (int i = 0; i < matrix.length; i++) {
-			for (int j = i; j < matrix[0].length; j+=i) {
-				sum += matrix[i][j];
-			}
-			
+			sum += matrix[i][col];
+			col++;
 		}
 		return sum;
 	}
