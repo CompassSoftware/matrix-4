@@ -236,6 +236,24 @@ public class Matrix
 		}
 	}
 	
+	/**
+	 * print - Print the matrix to the output stream. 
+	 * @param output
+	 * @param w
+	 * @param d
+	 */
+	public void print(java.io.PrintWriter output, int w, int d)
+	{
+		for (int i = 0; i < m; i++) 
+		{
+			for (int j = 0; j < width; j++) 
+			{
+				output.print(String.format("%.df", (matrix[i][j])));
+			}
+			output.println();
+		}
+	}
+	
 	
 	
 }
