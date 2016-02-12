@@ -308,6 +308,61 @@ public class Matrix
 		
 	}
 	
+	/**
+	 * minusEquals - Return the difference of the matrix and parameter matrix.
+	 * 				-Changes class matrix to returned value. 
+	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @return A - B
+	 */
+	public Matrix minusEquals(Matrix B)
+	{
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					matrix[i][j] = matrix[i][j] - B[i][j];
+				}
+			}
+			return matrix;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
+	/**
+	 * plusEquals - Return the addition of the matrix and parameter matrix.
+	 * 				-Changes class matrix to returned value. 
+	 * @param B - Matrix to be added to the class Matrix. Must be same dimension.
+	 * @return A + B
+	 */
+	public Matrix plusEquals(Matrix B)
+	{
+		
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					matrix[i][j] = matrix[i][j] + B[i][j];
+				}
+			}
+			return matrix;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
 	
 	
 }
