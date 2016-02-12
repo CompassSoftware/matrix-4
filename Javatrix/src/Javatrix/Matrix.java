@@ -7,7 +7,7 @@ public class Matrix
 	private int m;
 	private int n;
 	
-	/*
+	/**
 	 * Constructor that checks arguments on basis that all rows need to be
 	 * 		the same length
 	 * 
@@ -29,7 +29,7 @@ public class Matrix
 		
 	}
 	
-	/*
+	/**
 	 * Attempts to create a new Matrix object quickly, without checking input parameters.
 	 * 
 	 * @param A - 2D array from which to construct the matrix
@@ -48,6 +48,12 @@ public class Matrix
 		}
 	}
 	
+	/**
+	 * Matrix - Construcst a matrix from a one-dimensional packed array
+	 * @param vals
+	 * @param m
+	 * @throws IllegalArgumentException
+	 */
 	public Matrix(double[] vals, int m) throws IllegalArgumentException
 	{
 		if(vals.length%m != 0) throw new IllegalArgumentException();
@@ -63,7 +69,7 @@ public class Matrix
 		}
 	}
 	
-	/*
+	/**
 	 * Creates a new Matrix object of the specified size, filled with zeros.
 	 * 
 	 * @param m - Number of rows
@@ -76,7 +82,7 @@ public class Matrix
 		this.n = n;
 	}
 	
-	/*
+	/**
 	 * Creates a new Matrix object of the specified size, filled with the specified value.
 	 * 
 	 * @param m - Number of rows
@@ -93,7 +99,7 @@ public class Matrix
 		}
 	}
 	
-	/*
+	/**
 	 * copy - makes a deep copy of a matrix
 	 */
 	public Matrix copy() {
@@ -106,30 +112,27 @@ public class Matrix
 		return M;
 	}
 	
-	/*
-	 * get - returns a specific element from the matrix
-	 * 
-	 * @param i - row index
-	 * @param j - column index
-	 */
-	public double get(int i, int j) throws ArrayIndexOutOfBoundsException {
-		if(i >= 0 && i < m && j >= 0 && j < n) return matrix[i][j];
-		else throw new ArrayIndexOutOfBoundsException();
-	}
 	
-	/*
+	/**
 	 * set - sets a single element of the matrix to a specific double value
 	 * 
 	 * @param i - row index
 	 * @param j - column index
 	 * @param s - double value to set the matrix element to.
 	 */
-	public void set(int i, int j, double s) throws ArrayIndexOutOfBoundsException {
-		if(i >= 0 && i < m && j >= 0 && j < n) matrix[i][j] = s;
-		else throw new ArrayIndexOutOfBoundsException();
+	public void set(int i, int j, double s) throws ArrayIndexOutOfBoundsException 
+	{
+		if(i >= 0 && i < m && j >= 0 && j < n)
+	    {
+			matrix[i][j] = s;
+	    }
+		else
+		{
+			throw new ArrayIndexOutOfBoundsException();
+		}
 	}
 	
-	/*
+	/**
 	 * random - generates a matrix with random elements
 	 * 
 	 * @param m - number of rows
@@ -146,7 +149,7 @@ public class Matrix
 		return M;	
 	}
 	
-	/*
+	/**
 	 * trace - returns the sum of the diagonal of the matrix
 	 * 
 	 * !!!!Not sure about this one
@@ -158,4 +161,54 @@ public class Matrix
 		}
 		return sum;
 	}
+	
+	/**
+	 * getArray - Accesses the internal two-dimensional array.
+	 * @return double[][]
+	 */
+	public double[][] getArray()
+	{
+		return matrix;
+	}
+	
+	/**
+	 * getColumnDimension - Gets the column dimension.
+	 * @return int 
+	 */
+	public int getColumnDimension()
+	{
+		return n;
+	}
+	
+	/**
+	 * getRowDimension - Gets the row dimension.
+	 * @return int 
+	 */
+	public int getRowDimension()
+	{
+		return m;
+	}
+	
+	/**
+	 * get - returns a specific element from the matrix
+	 * 
+	 * @param i - row index
+	 * @param j - column index
+	 */
+	public double get(int i, int j) throws ArrayIndexOutOfBoundsException 
+	{
+		if(i >= 0 && i < m && j >= 0 && j < n) 
+		{
+			return matrix[i][j];
+		}
+		else
+		{
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+	
+	
+	
+	
+	
 }
