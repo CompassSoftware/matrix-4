@@ -254,6 +254,60 @@ public class Matrix
 		}
 	}
 	
+	/**
+	 * plus - Return the sum of the matrix and parameter matrix.
+	 * @param B - Matrix to be added to current matrix. Must be same dimension.
+	 * @return A + B
+	 */
+	public Matrix plus(Matrix B)
+	{
+		Matrix C = new double[m][n];
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					C[i][j] = matrix[i][j] + B[i][j];
+				}
+			}
+			return C;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
+	/**
+	 * minus - Return the difference of the matrix and parameter matrix.
+	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @return A - B
+	 */
+	public Matrix minus(Matrix B)
+	{
+		Matrix C = new double[m][n];
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					C[i][j] = matrix[i][j] - B[i][j];
+				}
+			}
+			return C;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
 	
 	
 }
