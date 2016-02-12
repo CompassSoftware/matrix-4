@@ -1,6 +1,8 @@
 package Javatrix;
+
 import java.io.*;
 import java.util.Random;
+
 public class Matrix 
 {
 	private double[][] matrix;
@@ -50,9 +52,10 @@ public class Matrix
 	
 	/**
 	 * Matrix - Construcst a matrix from a one-dimensional packed array
-	 * @param vals
-	 * @param m
-	 * @throws IllegalArgumentException
+	 * 
+	 * @param vals - The packed array
+	 * @param m - Number of rows to break the array into
+	 * @throws IllegalArgumentException - If the length of vals isn't a multiple of m
 	 */
 	public Matrix(double[] vals, int m) throws IllegalArgumentException
 	{
@@ -114,13 +117,14 @@ public class Matrix
 	
 	/**
 	 * getArrayCopy - returns a copy of the internal 2D array of the matrix.
+	 * 
 	 * @return double[][]
 	 */
 	public double[][] getArrayCopy() {
-		double[][] copy = new double[][];
+		double[][] copy = new double[m][n];
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				cp[i][j] = matrix[i][j];
+				copy[i][j] = matrix[i][j];
 			}
 		}
 		return copy;
@@ -163,8 +167,6 @@ public class Matrix
 	
 	/**
 	 * trace - returns the sum of the diagonal of the matrix
-	 * 
-	 * !!!!Not sure about this one
 	 */
 	public double trace() {
 		double sum = 0;
@@ -176,6 +178,7 @@ public class Matrix
 	
 	/**
 	 * getArray - Accesses the internal two-dimensional array.
+	 * 
 	 * @return double[][]
 	 */
 	public double[][] getArray()
@@ -185,6 +188,7 @@ public class Matrix
 	
 	/**
 	 * getColumnDimension - Gets the column dimension.
+	 * 
 	 * @return int 
 	 */
 	public int getColumnDimension()
@@ -194,6 +198,7 @@ public class Matrix
 	
 	/**
 	 * getRowDimension - Gets the row dimension.
+	 * 
 	 * @return int 
 	 */
 	public int getRowDimension()
@@ -221,6 +226,7 @@ public class Matrix
 	
 	/**
 	 * print - Print the matrix to stdout.
+	 * 
 	 * @param format - java.text.NumberFormat
 	 * @param width - represents how many columns to print. 
 	 */
@@ -230,7 +236,7 @@ public class Matrix
 		{
 			for (int j = 0; j < width; j++) 
 			{
-				System.out.print(format.format(matrix[i][j]);
+				System.out.print(format.format(matrix[i][j]));
 			}
 			System.out.println();
 		}
@@ -238,6 +244,7 @@ public class Matrix
 	
 	/**
 	 * print - Print the matrix to stdout.
+	 * 
 	 * @param format - java.text.NumberFormat
 	 * @param width - represents how many columns to print. 
 	 */
@@ -247,7 +254,7 @@ public class Matrix
 		{
 			for (int j = 0; j < width; j++) 
 			{
-				output.print(format.format(matrix[i][j]);
+				output.print(format.format(matrix[i][j]));
 			}
 			output.println();
 		}
@@ -255,6 +262,7 @@ public class Matrix
 	
 	/**
 	 * print - Print the matrix to the output stream. 
+	 * 
 	 * @param output
 	 * @param w
 	 * @param d
@@ -263,7 +271,7 @@ public class Matrix
 	{
 		for (int i = 0; i < m; i++) 
 		{
-			for (int j = 0; j < width; j++) 
+			for (int j = 0; j < n; j++) 
 			{
 				output.print(String.format("%.df", (matrix[i][j])));
 			}
