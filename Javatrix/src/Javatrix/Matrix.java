@@ -237,6 +237,23 @@ public class Matrix
 	}
 	
 	/**
+	 * print - Print the matrix to stdout.
+	 * @param format - java.text.NumberFormat
+	 * @param width - represents how many columns to print. 
+	 */
+	public void print(java.io.PrintWriter output, java.text.NumberFormat format, int width)
+	{
+		for (int i = 0; i < m; i++) 
+		{
+			for (int j = 0; j < width; j++) 
+			{
+				output.print(format.format(matrix[i][j]);
+			}
+			output.println();
+		}
+	}
+	
+	/**
 	 * print - Print the matrix to the output stream. 
 	 * @param output
 	 * @param w
