@@ -380,6 +380,114 @@ public class Matrix
 		
 	}
 	
+	/**
+	 * identity-returns an mxn matrix with ones on the diagonal and zeroes elsewhere.
+	 * @param m -number of rows
+	 * @param n -number of columns
+	 */
+	public static Matrix identity(int m, int n)
+	{
+		Matrix M = new double[m][n];
+		int spot = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				if(j == spot)
+				{
+					M[i][j] = 1;
+				}
+				else
+				{
+					M[i][j] = 0;
+				}
+			}
+			spot++;
+		}
+		return M;
+	}
+	
+	/**
+	 * timesEquals-Multiply a matrix by a scalar in place, A = s*A.
+	 * @param s - scalar
+	 * @return Scaled matrix, s*A.
+	 */
+	public Matrix timesEquals(double s)
+	{
+		
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				matrix[i][j] = matrix[i][j] * s;
+			}
+		}
+		return matrix;
+	}
+	
+	/**
+	 * normF-returns Frobenius norm of a matrix.
+	 * @return sqrt of sum of squares of all elements.
+	 */
+	public double normF()
+	{
+		double sum = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				sum += matrix[i][j]*matrix[i][j];
+			}
+		}
+		return Math.sqrt(sum);
+	}
+	
+	/**
+	 * normInF-returns infinity norm of a matrix.
+	 * @return largest sum of absolute values from each row.
+	 */
+	public double normInF()
+	{
+		double sum = 0;
+		double temp = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				temp += Math.abs(matrix[i][j]);
+			}
+			if(temp > sum)
+			{
+				sum = temp;
+			}
+			temp = 0;
+		}
+		return sum;
+	}
+	
+	/**
+	 * norm1-returns one norm of a matrix.
+	 * @return maximum column sum.
+	 */
+	public double norm1()
+	{
+		double sum = 0;
+		double temp = 0;
+		for(int i = 0; i < n; i++)
+		{
+			for(int j = 0; j < m; j++)
+			{
+				temp += Math.abs(matrix[i][j]);
+			}
+			if(temp > sum)
+			{
+				sum = temp;
+			}
+			temp = 0;
+		}
+		return sum;
+	}
+	
 	
 	
 }
