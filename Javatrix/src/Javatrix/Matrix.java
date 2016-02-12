@@ -112,7 +112,19 @@ public class Matrix
 		return M;
 	}
 	
-	
+	/**
+	 * getArrayCopy - returns a copy of the internal 2D array of the matrix.
+	 * @return double[][]
+	 */
+	public double[][] getArrayCopy() {
+		double[][] cp = new double[][];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				cp[i][j] = matrix[i][j];
+			}
+		}
+		return cp;
+	}
 	/**
 	 * set - sets a single element of the matrix to a specific double value
 	 * 
