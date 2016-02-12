@@ -117,13 +117,13 @@ public class Matrix
 	 * @return double[][]
 	 */
 	public double[][] getArrayCopy() {
-		double[][] cp = new double[][];
+		double[][] copy = new double[][];
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
 				cp[i][j] = matrix[i][j];
 			}
 		}
-		return cp;
+		return copy;
 	}
 	/**
 	 * set - sets a single element of the matrix to a specific double value
