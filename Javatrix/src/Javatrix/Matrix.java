@@ -51,7 +51,7 @@ public class Matrix
 	}
 	
 	/**
-	 * Matrix - Construcst a matrix from a one-dimensional packed array
+	 * Matrix - Construct a matrix from a one-dimensional packed array
 	 * 
 	 * @param vals - The packed array
 	 * @param m - Number of rows to break the array into
