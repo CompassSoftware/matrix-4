@@ -279,6 +279,223 @@ public class Matrix
 		}
 	}
 	
+	/**
+	 * plus - Return the sum of the matrix and parameter matrix.
+	 * @param B - Matrix to be added to current matrix. Must be same dimension.
+	 * @return A + B
+	 */
+	public Matrix plus(Matrix B)
+	{
+		Matrix C = new double[m][n];
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					C[i][j] = matrix[i][j] + B[i][j];
+				}
+			}
+			return C;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
+	/**
+	 * minus - Return the difference of the matrix and parameter matrix.
+	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @return A - B
+	 */
+	public Matrix minus(Matrix B)
+	{
+		Matrix C = new double[m][n];
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					C[i][j] = matrix[i][j] - B[i][j];
+				}
+			}
+			return C;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
+	/**
+	 * minusEquals - Return the difference of the matrix and parameter matrix.
+	 * 				-Changes class matrix to returned value. 
+	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @return A - B
+	 */
+	public Matrix minusEquals(Matrix B)
+	{
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					matrix[i][j] = matrix[i][j] - B[i][j];
+				}
+			}
+			return matrix;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
+	/**
+	 * plusEquals - Return the addition of the matrix and parameter matrix.
+	 * 				-Changes class matrix to returned value. 
+	 * @param B - Matrix to be added to the class Matrix. Must be same dimension.
+	 * @return A + B
+	 */
+	public Matrix plusEquals(Matrix B)
+	{
+		
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					matrix[i][j] = matrix[i][j] + B[i][j];
+				}
+			}
+			return matrix;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return matrix;
+		}
+		
+	}
+	
+	/**
+	 * identity-returns an mxn matrix with ones on the diagonal and zeroes elsewhere.
+	 * @param m -number of rows
+	 * @param n -number of columns
+	 */
+	public static Matrix identity(int m, int n)
+	{
+		Matrix M = new double[m][n];
+		int spot = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				if(j == spot)
+				{
+					M[i][j] = 1;
+				}
+				else
+				{
+					M[i][j] = 0;
+				}
+			}
+			spot++;
+		}
+		return M;
+	}
+	
+	/**
+	 * timesEquals-Multiply a matrix by a scalar in place, A = s*A.
+	 * @param s - scalar
+	 * @return Scaled matrix, s*A.
+	 */
+	public Matrix timesEquals(double s)
+	{
+		
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				matrix[i][j] = matrix[i][j] * s;
+			}
+		}
+		return matrix;
+	}
+	
+	/**
+	 * normF-returns Frobenius norm of a matrix.
+	 * @return sqrt of sum of squares of all elements.
+	 */
+	public double normF()
+	{
+		double sum = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				sum += matrix[i][j]*matrix[i][j];
+			}
+		}
+		return Math.sqrt(sum);
+	}
+	
+	/**
+	 * normInF-returns infinity norm of a matrix.
+	 * @return largest sum of absolute values from each row.
+	 */
+	public double normInF()
+	{
+		double sum = 0;
+		double temp = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				temp += Math.abs(matrix[i][j]);
+			}
+			if(temp > sum)
+			{
+				sum = temp;
+			}
+			temp = 0;
+		}
+		return sum;
+	}
+	
+	/**
+	 * norm1-returns one norm of a matrix.
+	 * @return maximum column sum.
+	 */
+	public double norm1()
+	{
+		double sum = 0;
+		double temp = 0;
+		for(int i = 0; i < n; i++)
+		{
+			for(int j = 0; j < m; j++)
+			{
+				temp += Math.abs(matrix[i][j]);
+			}
+			if(temp > sum)
+			{
+				sum = temp;
+			}
+			temp = 0;
+		}
+		return sum;
+	}
+	
 	
 	
 }
