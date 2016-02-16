@@ -308,7 +308,7 @@ public class Matrix
 	
 	/**
 	 * minus - Return the difference of the matrix and parameter matrix.
-	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @param B - Matrix to be subtracted from the current matrix. Must be same dimension.
 	 * @return A - B
 	 */
 	public Matrix minus(Matrix B)

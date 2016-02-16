@@ -233,7 +233,6 @@ public class MatrixTest {
 		assertEquals(m.norm1(), 2.4, 0);
 	}
 	
-
 	/*
 	 * Tests the normNormF method.
 	 */
@@ -245,6 +244,97 @@ public class MatrixTest {
 		System.out.print(m.normF());
 		assertEquals(m.normF(), 1.688, .001);
 	}
+	
+	/*
+	 * Test plus, adds two matrices together
+	 */
+	@Test
+	public void testPlus() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		Matrix z = x.plus(y);
+		int m = x.getRowDimension();
+		int n = x.getColumnDimension();
+		Matrix a = new Matrix(new double[m][n]);
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				a.getArray()[i][j] = x.getArray()[i][j] + y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(z.getArray(), a.getArray());
+	}
+	
+	/*
+	 * Test minus, subtracts two matrices 
+	 */
+	@Test
+	public void testMinus() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		Matrix z = x.minus(y);
+		int m = x.getRowDimension();
+		int n = x.getColumnDimension();
+		Matrix a = new Matrix(new double[m][n]);
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				a.getArray()[i][j] = x.getArray()[i][j] - y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(z.getArray(), a.getArray());
+	}
 
-
+	/*
+	 * Test plusEquals, adds a matrix to the class matrix
+	 */
+	@Test
+	public void testplusEquals() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix expected = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		expected.plusEquals(y);
+		Matrix actual = new Matrix(data1);
+		int m = expected.getRowDimension();
+		int n = expected.getColumnDimension();
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				actual.getArray()[i][j] = actual.getArray()[i][j] + y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(expected.getArray(), actual.getArray());	
+	}
+	
+	/*
+	 * Test minusEquals, subtracts a matrix from the class matrix
+	 */
+	@Test
+	public void testminusEquals() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix expected = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		expected.minusEquals(y);
+		Matrix actual = new Matrix(data1);
+		int m = expected.getRowDimension();
+		int n = expected.getColumnDimension();
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				actual.getArray()[i][j] = actual.getArray()[i][j] - y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(expected.getArray(), actual.getArray());	
+	}
+	
 }
