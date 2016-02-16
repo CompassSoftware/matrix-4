@@ -2,8 +2,12 @@ package Javatrix;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
+import java.io.PrintWriter;
+import java.io.PrintStream;
 
+import org.junit.Test;
 public class MatrixTest {
 
 	/*
@@ -81,4 +85,103 @@ public class MatrixTest {
 		double[][] actual = m.getArray();
 		assertArrayEquals(expected, actual);
 	}
+	
+	/*
+	 * Test getColumnDimension
+	 */
+	@Test
+	public void testGetColumnDimension() {
+		Matrix m = new Matrix(3,4);
+		int expected = 4;
+		assertEquals(m.getColumnDimension(), expected);
+	}
+	
+	/*
+	 * Test getRowDimension
+	 */
+	@Test
+	public void testGetRowDimension() {
+		Matrix m = new Matrix(3,4);
+		int expected = 3;
+		assertEquals(m.getRowDimension(), expected);
+	}
+	
+	/*
+	 * Test copy, makes a deep copy of the matrix
+	 */
+	@Test
+	public void testCopy() {
+		int m = 4;
+		int n = 4;
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix mat = new Matrix(data, m, n);
+		Matrix t = mat.copy();
+		int expectedRow = mat.getRowDimension();
+		int expectedCol = mat.getColumnDimension();
+		int actualRow = t.getRowDimension();
+		int actualCol = t.getColumnDimension();
+		assertEquals(expectedRow, actualRow);
+		assertEquals(expectedCol, actualCol);
+		double[][] expected = mat.getArray();
+		double[][] actual = t.getArray();
+		assertArrayEquals(expected, actual);
+	}
+	
+	/*
+	 * Test getArrayCopy, returns a copy of the internal 2D array of the matrix
+	 */
+	@Test
+	public void testgetArrayCopy() {
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix m = new Matrix(data);
+		Matrix t = new Matrix(m.getArrayCopy());
+		double[][] expected = m.getArray();
+		double[][] actual = t.getArray();
+		assertArrayEquals(expected, actual);
+		
+	}
+	
+	/*
+	 * Test trace, returns sum of the diagonal of a matrix
+	 * 
+	 * ALSO tests random(), which returns a matrix of randomly generated doubles
+	 */
+	@Test
+	public void testTrace() {
+		Matrix t;
+		t = Matrix.random(4,4);
+		double expected = t.trace();
+		double actual = 0;
+		int m = t.getRowDimension();
+		int n = t.getRowDimension();
+		for (int i = 0; i < m && i < n; i++) {
+			actual += t.getArray()[i][i];
+		}
+		for (int i = 0; i < m && i < n; i++) {
+			System.out.println(t.getArray()[i][i]);
+		}
+		int x = (int)expected;
+		int y = (int)actual;
+		System.out.println(x);
+		System.out.println(y);
+		assertEquals(x,y);
+	}
+	
+	/*
+	 * Test print with number format
+	 */
+	@Test
+	public void testPrintNumFormat() {
+		System.out.println("---------------------------------");
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		int m = t.getRowDimension();
+		int n = t.getRowDimension();
+		DecimalFormat format = new DecimalFormat();
+		for (int i = 0; i < m && i < n; i++) {
+			t.print(format, 1);
+		}
+		
+	}
+
 }
