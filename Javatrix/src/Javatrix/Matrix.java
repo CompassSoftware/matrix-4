@@ -395,7 +395,7 @@ public class Matrix
 	 */
 	public static Matrix identity(int m, int n)
 	{
-		Matrix M = new double[m][n];
+		double[][] data = new double[m][n];
 		int spot = 0;
 		for(int i = 0; i < m; i++)
 		{
@@ -403,16 +403,17 @@ public class Matrix
 			{
 				if(j == spot)
 				{
-					M[i][j] = 1;
+					data[i][j] = 1;
 				}
 				else
 				{
-					M[i][j] = 0;
+					data[i][j] = 0;
 				}
 			}
 			spot++;
 		}
-		return M;
+		return new Matrix(data);
+		
 	}
 	
 	/**
