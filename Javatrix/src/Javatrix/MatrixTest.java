@@ -182,5 +182,69 @@ public class MatrixTest {
 		}
 		
 	}
+	
+	/*
+	 * Tests the get method.
+	 */
+	@Test
+	public void testGet()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		assertEquals(m.get(1, 0), .4, 0);
+		assertEquals(m.get(2, 0), .7, 0);
+		
+	}
+	
+	/*
+	 * Tests the set method.
+	 */
+	@Test
+	public void testSet()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m.set(1, 1, 5);
+		m.set(2, 0, .55);
+		assertEquals(m.get(1, 1), 5, 0);
+		assertEquals(m.get(2, 0), .55, 0);
+		
+	}
+	
+	/*
+	 * Tests the get array method. 
+	 */
+	@Test
+	public void testGetArray()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		assertArrayEquals(data, m.getArray());
+	}
+	
+	/*
+	 * Tests the norm1 method.
+	 */
+	@Test
+	public void testNorm1()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		assertEquals(m.norm1(), 2.4, 0);
+	}
+	
+
+	/*
+	 * Tests the normNormF method.
+	 */
+	@Test
+	public void testNormF()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		System.out.print(m.normF());
+		assertEquals(m.normF(), 1.688, .001);
+	}
+
 
 }
