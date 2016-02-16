@@ -313,14 +313,14 @@ public class Matrix
 	 */
 	public Matrix minus(Matrix B)
 	{
-		Matrix C = new double[m][n];
+		Matrix C = new Matrix(new double[m][n]);
 		if(B.m == this.m && B.n == this.n)
 		{
 			for(int i = 0; i < m; i++)
 			{
 				for(int j = 0; j < n; j++)
 				{
-					C[i][j] = matrix[i][j] - B[i][j];
+					C.getArray()[i][j] = matrix[i][j] - B.getArray()[i][j];
 				}
 			}
 			return C;
@@ -328,7 +328,7 @@ public class Matrix
 		else
 		{
 			System.out.println("Parameter matrix must be same dimension.");
-			return matrix;
+			return null;
 		}
 		
 	}
@@ -431,7 +431,7 @@ public class Matrix
 				matrix[i][j] = matrix[i][j] * s;
 			}
 		}
-		return matrix;
+		return this;
 	}
 	
 	/**
@@ -477,6 +477,7 @@ public class Matrix
 	/**
 	 * norm1-returns one norm of a matrix.
 	 * @return maximum column sum.
+	 * test
 	 */
 	public double norm1()
 	{
