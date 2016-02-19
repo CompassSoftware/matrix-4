@@ -4,12 +4,14 @@ import static org.junit.Assert.*;
 
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.PrintStream;
 
 import org.junit.Test;
 public class MatrixTest {
-
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	
 	/*
 	 * Test the basic constructor, and its exception case.
 	 */
@@ -157,14 +159,26 @@ public class MatrixTest {
 		for (int i = 0; i < m && i < n; i++) {
 			actual += t.getArray()[i][i];
 		}
-		for (int i = 0; i < m && i < n; i++) {
-			System.out.println(t.getArray()[i][i]);
-		}
+		
 		int x = (int)expected;
 		int y = (int)actual;
-		System.out.println(x);
-		System.out.println(y);
 		assertEquals(x,y);
+	}
+	
+	/*
+	 * Test Random. 
+	 */
+	public void TestRandom()
+	{
+		Matrix t;
+		t = Matrix.random(4,4);
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				assertNotNull(t.get(i, j));
+			}
+		}
 	}
 	
 	/*
@@ -172,14 +186,13 @@ public class MatrixTest {
 	 */
 	@Test
 	public void testPrintNumFormat() {
+		System.setOut(new PrintStream(outContent));
 		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
 		Matrix t = new Matrix(data);
-		int m = t.getRowDimension();
-		int n = t.getRowDimension();
-		DecimalFormat format = new DecimalFormat();
-		for (int i = 0; i < m && i < n; i++) {
-			t.print(format, 1);
-		}
+		DecimalFormat format = new java.text.DecimalFormat("#.## ");
+		t.print(format, 4);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
 		
 	}
 	

@@ -159,7 +159,7 @@ public class Matrix
 		Matrix M = new Matrix(m,n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				M.matrix[i][j] = r.nextDouble();
+				M.matrix[i][j] = r.nextDouble() * 10;
 			}
 		}
 		return M;	
