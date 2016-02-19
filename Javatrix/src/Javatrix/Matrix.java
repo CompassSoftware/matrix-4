@@ -104,6 +104,8 @@ public class Matrix
 	
 	/**
 	 * copy - makes a deep copy of a matrix
+	 * 
+	 * @return Matrix - deep copy of Matrix object
 	 */
 	public Matrix copy() {
 		Matrix M = new Matrix(m, n);
@@ -115,6 +117,14 @@ public class Matrix
 		return M;
 	}
 	
+	/**
+	 * clone - returns a clone of the matrix object
+	 * 
+	 * @return Object (clone of matrix)
+	 */
+	public Object clone() {
+		return this.copy();
+	}
 	/**
 	 * getArrayCopy - returns a copy of the internal 2D array of the matrix.
 	 * 
@@ -498,6 +508,63 @@ public class Matrix
 		return sum;
 	}
 	
+	/**
+	 * getColumnPackedCopy - returns one dimensional column packed copy of internal array
+	 * 
+	 * @return double[] column packed array
+	 */
+	public double[] getColumnPackedCopy() {
+		double[] copy = new double[m*n];
+		for (int i = 0; i < getRowDimension(); i++) {
+			for (int j = 0; j < getColumnDimension(); j++) {
+				copy[j * m + i] = matrix[i][j]; 
+			}
+		}
+		return copy;
+	}
 	
+	/**
+	 * getRowPackedCopy - returns one dimensional row packed copy of internal array
+	 * 
+	 * @return double[] row packed array
+	 */
+	public double[] getRowPackedCopy() {
+		double[] copy = new double[m*n];
+		for (int i = 0; i < getRowDimension(); i++) {
+			for (int j = 0; j < getColumnDimension(); j++) {
+				copy[i * n + j] = matrix[i][j]; 
+			}
+		}
+		return copy;
+	}
 	
+	/**
+	 * uminus - performs a unary minus operation on a matrix
+	 * 
+	 * @return -A
+	 */
+	public Matrix uminus() {
+		double[][] A = new double[m][n];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				A[i][j] = -(matrix[i][j]);
+			}
+		}
+		return new Matrix(A);
+	}
+	
+	/**
+	 * transpose - performs matrix transpose
+	 * 
+	 * @return A'
+	 */
+	public Matrix transpose() {
+		double[][] A = new double[n][m];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				A[j][i] = matrix[i][j];
+			}
+		}
+		return new Matrix(A);
+	}
 }
