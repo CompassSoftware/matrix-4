@@ -554,7 +554,7 @@ public class Matrix
 	}
 	
 	/**
-	 * transpose - performs matrix transpose
+	 * transpose - performs matrix transposes
 	 * 
 	 * @return A'
 	 */

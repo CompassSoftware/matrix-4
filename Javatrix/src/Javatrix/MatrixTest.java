@@ -349,4 +349,5 @@ public class MatrixTest {
 		}
 		assertArrayEquals(expected.getArray(), actual.getArray());	
 	}
+	
 }
