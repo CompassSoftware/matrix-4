@@ -197,6 +197,35 @@ public class MatrixTest {
 	}
 	
 	/*
+	 * Test print with number format with format and width
+	 */
+	@Test
+	public void testPrintNumFormatWD() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), new java.text.DecimalFormat("#.## "), 4);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
+	}
+	
+	/*
+	 * Test print with number format with W and D parameters
+	 */
+	@Test
+	public void testPrintNumFormatW() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), 4, 1);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
+	}
+	
+	
+	/*
 	 * Tests the get method.
 	 */
 	@Test
