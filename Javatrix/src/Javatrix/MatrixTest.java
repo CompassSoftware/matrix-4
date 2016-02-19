@@ -188,4 +188,157 @@ public class MatrixTest {
 		
 	}
 
+	/*
+	 * Tests the get method.
+	 */
+	@Test
+	public void testGet()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		assertEquals(m.get(1, 0), .4, 0);
+		assertEquals(m.get(2, 0), .7, 0);
+		
+	}
+	
+	/*
+	 * Tests the set method.
+	 */
+	@Test
+	public void testSet()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m.set(1, 1, 5);
+		m.set(2, 0, .55);
+		assertEquals(m.get(1, 1), 5, 0);
+		assertEquals(m.get(2, 0), .55, 0);
+		
+	}
+	
+	/*
+	 * Tests the get array method. 
+	 */
+	@Test
+	public void testGetArray()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		assertArrayEquals(data, m.getArray());
+	}
+	
+	/*
+	 * Tests the norm1 method.
+	 */
+	@Test
+	public void testNorm1()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		assertEquals(m.norm1(), 2.4, 0);
+	}
+	
+	/*
+	 * Tests the normNormF method.
+	 */
+	@Test
+	public void testNormF()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		System.out.print(m.normF());
+		assertEquals(m.normF(), 1.688, .001);
+	}
+	
+	/*
+	 * Test plus, adds two matrices together
+	 */
+	@Test
+	public void testPlus() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		Matrix z = x.plus(y);
+		int m = x.getRowDimension();
+		int n = x.getColumnDimension();
+		Matrix a = new Matrix(new double[m][n]);
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				a.getArray()[i][j] = x.getArray()[i][j] + y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(z.getArray(), a.getArray());
+	}
+	
+	/*
+	 * Test minus, subtracts two matrices 
+	 */
+	@Test
+	public void testMinus() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		Matrix z = x.minus(y);
+		int m = x.getRowDimension();
+		int n = x.getColumnDimension();
+		Matrix a = new Matrix(new double[m][n]);
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				a.getArray()[i][j] = x.getArray()[i][j] - y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(z.getArray(), a.getArray());
+	}
+
+	/*
+	 * Test plusEquals, adds a matrix to the class matrix
+	 */
+	@Test
+	public void testplusEquals() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix expected = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		expected.plusEquals(y);
+		Matrix actual = new Matrix(data1);
+		int m = expected.getRowDimension();
+		int n = expected.getColumnDimension();
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				actual.getArray()[i][j] = actual.getArray()[i][j] + y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(expected.getArray(), actual.getArray());	
+	}
+	
+	/*
+	 * Test minusEquals, subtracts a matrix from the class matrix
+	 */
+	@Test
+	public void testminusEquals() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4},{4.2,4.2,4.3,4.4}};
+		Matrix expected = new Matrix(data1);
+		Matrix y = new Matrix(data2);
+		expected.minusEquals(y);
+		Matrix actual = new Matrix(data1);
+		int m = expected.getRowDimension();
+		int n = expected.getColumnDimension();
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				actual.getArray()[i][j] = actual.getArray()[i][j] - y.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(expected.getArray(), actual.getArray());	
+	}
 }

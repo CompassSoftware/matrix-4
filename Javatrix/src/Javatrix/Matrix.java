@@ -104,6 +104,8 @@ public class Matrix
 	
 	/**
 	 * copy - makes a deep copy of a matrix
+	 * 
+	 * @return Matrix - deep copy of Matrix object
 	 */
 	public Matrix copy() {
 		Matrix M = new Matrix(m, n);
@@ -115,6 +117,14 @@ public class Matrix
 		return M;
 	}
 	
+	/**
+	 * clone - returns a clone of the matrix object
+	 * 
+	 * @return Object (clone of matrix)
+	 */
+	public Object clone() {
+		return this.copy();
+	}
 	/**
 	 * getArrayCopy - returns a copy of the internal 2D array of the matrix.
 	 * 
@@ -279,6 +289,282 @@ public class Matrix
 		}
 	}
 	
+	/**
+	 * plus - Return the sum of the matrix and parameter matrix.
+	 * @param B - Matrix to be added to current matrix. Must be same dimension.
+	 * @return A + B
+	 */
+	public Matrix plus(Matrix B)
+	{
+		Matrix C = new Matrix(new double[m][n]);
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					C.getArray()[i][j] = matrix[i][j] + B.getArray()[i][j];
+				}
+			}
+			return C;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return null;
+		}
+		
+	}
 	
+	/**
+	 * minus - Return the difference of the matrix and parameter matrix.
+	 * @param B - Matrix to be subtracted from the current matrix. Must be same dimension.
+	 * @return A - B
+	 */
+	public Matrix minus(Matrix B)
+	{
+		Matrix C = new Matrix(new double[m][n]);
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					C.getArray()[i][j] = matrix[i][j] - B.getArray()[i][j];
+				}
+			}
+			return C;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return null;
+		}
+		
+	}
 	
+	/**
+	 * minusEquals - Return the difference of the matrix and parameter matrix.
+	 * 				-Changes class matrix to returned value. 
+	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @return A - B
+	 */
+	public Matrix minusEquals(Matrix B)
+	{
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					matrix[i][j] = matrix[i][j] - B.getArray()[i][j];
+				}
+			}
+			return this;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * plusEquals - Return the addition of the matrix and parameter matrix.
+	 * 				-Changes class matrix to returned value. 
+	 * @param B - Matrix to be added to the class Matrix. Must be same dimension.
+	 * @return A + B
+	 */
+	public Matrix plusEquals(Matrix B)
+	{
+		
+		if(B.m == this.m && B.n == this.n)
+		{
+			for(int i = 0; i < m; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					matrix[i][j] = matrix[i][j] + B.getArray()[i][j];
+				}
+			}
+			return this;
+		}
+		else
+		{
+			System.out.println("Parameter matrix must be same dimension.");
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * identity-returns an mxn matrix with ones on the diagonal and zeroes elsewhere.
+	 * @param m -number of rows
+	 * @param n -number of columns
+	 */
+	public static Matrix identity(int m, int n)
+	{
+		double[][] data = new double[m][n];
+		int spot = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				if(j == spot)
+				{
+					data[i][j] = 1;
+				}
+				else
+				{
+					data[i][j] = 0;
+				}
+			}
+			spot++;
+		}
+		return new Matrix(data);
+		
+	}
+	
+	/**
+	 * timesEquals-Multiply a matrix by a scalar in place, A = s*A.
+	 * @param s - scalar
+	 * @return Scaled matrix, s*A.
+	 */
+	public Matrix timesEquals(double s)
+	{
+		
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				matrix[i][j] = matrix[i][j] * s;
+			}
+		}
+		return this;
+	}
+	
+	/**
+	 * normF-returns Frobenius norm of a matrix.
+	 * @return sqrt of sum of squares of all elements.
+	 */
+	public double normF()
+	{
+		double sum = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				sum += matrix[i][j]*matrix[i][j];
+			}
+		}
+		return Math.sqrt(sum);
+	}
+	
+	/**
+	 * normInF-returns infinity norm of a matrix.
+	 * @return largest sum of absolute values from each row.
+	 */
+	public double normInF()
+	{
+		double sum = 0;
+		double temp = 0;
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 0; j < n; j++)
+			{
+				temp += Math.abs(matrix[i][j]);
+			}
+			if(temp > sum)
+			{
+				sum = temp;
+			}
+			temp = 0;
+		}
+		return sum;
+	}
+	
+	/**
+	 * norm1-returns one norm of a matrix.
+	 * @return maximum column sum.
+	 * test
+	 */
+	public double norm1()
+	{
+		double sum = 0;
+		double temp = 0;
+		for(int i = 0; i < n; i++)
+		{
+			for(int j = 0; j < m; j++)
+			{
+				temp += Math.abs(matrix[i][j]);
+			}
+			if(temp > sum)
+			{
+				sum = temp;
+			}
+			temp = 0;
+		}
+		return sum;
+	}
+	
+	/**
+	 * getColumnPackedCopy - returns one dimensional column packed copy of internal array
+	 * 
+	 * @return double[] column packed array
+	 */
+	public double[] getColumnPackedCopy() {
+		double[] copy = new double[m*n];
+		for (int i = 0; i < getRowDimension(); i++) {
+			for (int j = 0; j < getColumnDimension(); j++) {
+				copy[j * m + i] = matrix[i][j]; 
+			}
+		}
+		return copy;
+	}
+	
+	/**
+	 * getRowPackedCopy - returns one dimensional row packed copy of internal array
+	 * 
+	 * @return double[] row packed array
+	 */
+	public double[] getRowPackedCopy() {
+		double[] copy = new double[m*n];
+		for (int i = 0; i < getRowDimension(); i++) {
+			for (int j = 0; j < getColumnDimension(); j++) {
+				copy[i * n + j] = matrix[i][j]; 
+			}
+		}
+		return copy;
+	}
+	
+	/**
+	 * uminus - performs a unary minus operation on a matrix
+	 * 
+	 * @return -A
+	 */
+	public Matrix uminus() {
+		double[][] A = new double[m][n];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				A[i][j] = -(matrix[i][j]);
+			}
+		}
+		return new Matrix(A);
+	}
+	
+	/**
+	 * transpose - performs matrix transpose
+	 * 
+	 * @return A'
+	 */
+	public Matrix transpose() {
+		double[][] A = new double[n][m];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				A[j][i] = matrix[i][j];
+			}
+		}
+		return new Matrix(A);
+	}
 }
