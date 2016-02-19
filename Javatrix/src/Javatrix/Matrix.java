@@ -281,9 +281,9 @@ public class Matrix
 	{
 		for (int i = 0; i < m; i++) 
 		{
-			for (int j = 0; j < n; j++) 
+			for (int j = 0; j < w; j++) 
 			{
-				output.print(String.format("%.df", (matrix[i][j])));
+				output.print(String.format("%." + d +"f ", (matrix[i][j])));
 			}
 			output.println();
 		}

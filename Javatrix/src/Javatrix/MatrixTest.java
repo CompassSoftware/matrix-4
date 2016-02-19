@@ -197,6 +197,35 @@ public class MatrixTest {
 	}
 	
 	/*
+	 * Test print with number format with format and width
+	 */
+	@Test
+	public void testPrintNumFormatWD() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), new java.text.DecimalFormat("#.## "), 4);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
+	}
+	
+	/*
+	 * Test print with number format with W and D parameters
+	 */
+	@Test
+	public void testPrintNumFormatW() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), 4, 1);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
+	}
+	
+	
+	/*
 	 * Tests the get method.
 	 */
 	@Test
@@ -243,7 +272,6 @@ public class MatrixTest {
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
-		System.out.print(m.norm1());
 		assertEquals(m.norm1(), 1.7999999999999998, 0);
 	}
 	
@@ -416,6 +444,31 @@ public class MatrixTest {
 	}
 	
 	
+	
+	
+	
+	/*
+	 * Tests Transpose
+	 */
+	@Test
+	public void testTranspose() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{0.1, 1.1, 2.1, 3.1},{0.2, 1.2, 2.2, 3.2},{0.3, 1.3, 2.3, 3.3},{0.4, 1.4, 2.4, 3.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = x.transpose();
+		assertArrayEquals(new Matrix(data2).getArray(), y.getArray());
+	}
+	
+	/*
+	 * Tests getRowPackedCopy
+	 */
+	@Test
+	public void testGetRowPackedCopy() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[] data2 = {0.1, 0.2, 0.3, 0.4, 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4}; 
+		Matrix x = new Matrix(data1);
+		assertArrayEquals(x.getRowPackedCopy(), data2, 0);
+	}
 	
 	
 	
