@@ -497,7 +497,7 @@ public class Matrix
 		{
 			for(int j = 0; j < m; j++)
 			{
-				temp += Math.abs(matrix[i][j]);
+				temp += Math.abs(matrix[j][i]);
 			}
 			if(temp > sum)
 			{

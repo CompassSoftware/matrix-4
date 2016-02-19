@@ -243,7 +243,8 @@ public class MatrixTest {
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
-		assertEquals(m.norm1(), 2.4, 0);
+		System.out.print(m.norm1());
+		assertEquals(m.norm1(), 1.7999999999999998, 0);
 	}
 	
 	/*
@@ -254,7 +255,6 @@ public class MatrixTest {
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
-		System.out.print(m.normF());
 		assertEquals(m.normF(), 1.688, .001);
 	}
 	
@@ -349,5 +349,74 @@ public class MatrixTest {
 		}
 		assertArrayEquals(expected.getArray(), actual.getArray());	
 	}
+	
+	/*
+	 * Test identity, creates identity matrix with mxn dimensions
+	 */
+	@Test
+	public void testidentity() {
+		double[][] data1 = {{1.0,0.0,0.0,0.0},{0.0,1.0,0.0,0.0},{0.0,0.0,1.0,0.0},{0.0,0.0,0.0,1.0}};
+		
+		Matrix expected = new Matrix(data1);
+		Matrix actual = Matrix.identity(4, 4);
+		assertArrayEquals(expected.getArray(), actual.getArray());	
+	}
+	
+	/*
+	 * Tests the normInF method.
+	 */
+	@Test
+	public void testnormInF()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		System.out.println(m.norm1());
+		assertEquals(m.normInF(), 2.4, 0);
+	}
+	
+	/*
+	 * Tests the getColumnPackedCopy method.
+	 */
+	@Test
+	public void testgetColumnPackedCopy()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		double [] actual = m.getColumnPackedCopy();
+		double[] data2 = {.1,.4,.7,.2,.5,.8,.3,.6,.9};
+		assertArrayEquals(actual, data2, 0);
+	}
+	
+	/*
+	 * Tests the uminus method.
+	 */
+	@Test
+	public void testuminus()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m = m.uminus();
+		double[][] actual = m.getArray();
+		double[][] expected = {{-.1,-.2,-.3}, {-.4,-.5,-.6}, {-.7,-.8,-.9}};
+		assertArrayEquals(actual, expected);
+	}
+	
+	/*
+	 * Tests the timesequals method.
+	 */
+	@Test
+	public void timesequals()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m = m.timesEquals(3.0);
+		double[][] actual = m.getArray();
+		double[][] expected = {{.3,.6,.9}, {1.2,1.5,1.8}, {2.1,2.4,2.7}};
+		assertArrayEquals(actual, expected);
+	}
+	
+	
+	
+	
 	
 }
