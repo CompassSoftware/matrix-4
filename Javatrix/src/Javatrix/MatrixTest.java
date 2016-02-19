@@ -2,10 +2,9 @@ package Javatrix;
 
 import static org.junit.Assert.*;
 
-import java.text.NumberFormat;
 import java.text.DecimalFormat;
-import java.io.PrintWriter;
-import java.io.PrintStream;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import org.junit.Test;
 public class MatrixTest {
@@ -177,15 +176,11 @@ public class MatrixTest {
 	 */
 	@Test
 	public void testPrintNumFormat() {
-		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data = {{-0.1,0.2,0.3,0.4},{1.1,-1.2,1.3,1.4},{2.1,2.2,-2.3,2.4},{3.1,3.2,3.3,-3.4}};
 		Matrix t = new Matrix(data);
-		int m = t.getRowDimension();
-		int n = t.getRowDimension();
 		DecimalFormat format = new DecimalFormat();
-		for (int i = 0; i < m && i < n; i++) {
-			t.print(format, 1);
-		}
-		
+		format.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+			t.print(format, 3);
 	}
 
 	/*
@@ -246,7 +241,7 @@ public class MatrixTest {
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
-		System.out.print(m.normF());
+		System.out.println(m.normF());
 		assertEquals(m.normF(), 1.688, .001);
 	}
 	

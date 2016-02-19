@@ -1,6 +1,8 @@
 package Javatrix;
 
 import java.io.*;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class Matrix 
@@ -237,14 +239,23 @@ public class Matrix
 	/**
 	 * print - Print the matrix to stdout.
 	 * 
-	 * @param format - java.text.NumberFormat
-	 * @param width - represents how many columns to print. 
+	 * @param format - The NumberFormat object to use
+	 * @param width - represents the field width
 	 */
-	public void print(java.text.NumberFormat format, int width)
+	public void print(NumberFormat format, int width)
 	{
+		String pattern = "";
+		for(int i = 0; i < width-3; i++) pattern += "0";
+		if(width == 1) pattern = "0";
+		else if(width == 2) pattern = "00";
+		else if(width == 3) pattern = "0.0";
+		else if(width >= 4) pattern += ".00";
+		pattern += " ";
+		((DecimalFormat)format).applyPattern(pattern);
+		
 		for (int i = 0; i < m; i++) 
 		{
-			for (int j = 0; j < width; j++) 
+			for (int j = 0; j < n; j++) 
 			{
 				System.out.print(format.format(matrix[i][j]));
 			}
