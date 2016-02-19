@@ -379,4 +379,29 @@ public class MatrixTest {
 		assertArrayEquals(expected.getArray(), actual.getArray());	
 	}
 	
+	/*
+	 * Tests Transpose
+	 */
+	@Test
+	public void testTranspose() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{0.1, 1.1, 2.1, 3.1},{0.2, 1.2, 2.2, 3.2},{0.3, 1.3, 2.3, 3.3},{0.4, 1.4, 2.4, 3.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = x.transpose();
+		assertArrayEquals(new Matrix(data2).getArray(), y.getArray());
+	}
+	
+	/*
+	 * Tests Transpose
+	 */
+	@Test
+	public void testGetRowPackedCopy() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[] data2 = {0.1, 0.2, 0.3, 0.4, 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4}; 
+		Matrix x = new Matrix(data1);
+		assertArrayEquals(x.getRowPackedCopy(), data2, 0);
+	}
+	
+	
+	
 }
