@@ -4,12 +4,14 @@ import static org.junit.Assert.*;
 
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.PrintStream;
 
 import org.junit.Test;
 public class MatrixTest {
-
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	
 	/*
 	 * Test the basic constructor, and its exception case.
 	 */
@@ -157,14 +159,26 @@ public class MatrixTest {
 		for (int i = 0; i < m && i < n; i++) {
 			actual += t.getArray()[i][i];
 		}
-		for (int i = 0; i < m && i < n; i++) {
-			System.out.println(t.getArray()[i][i]);
-		}
+		
 		int x = (int)expected;
 		int y = (int)actual;
-		System.out.println(x);
-		System.out.println(y);
 		assertEquals(x,y);
+	}
+	
+	/*
+	 * Test Random. 
+	 */
+	public void TestRandom()
+	{
+		Matrix t;
+		t = Matrix.random(4,4);
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				assertNotNull(t.get(i, j));
+			}
+		}
 	}
 	
 	/*
@@ -172,16 +186,44 @@ public class MatrixTest {
 	 */
 	@Test
 	public void testPrintNumFormat() {
+		System.setOut(new PrintStream(outContent));
 		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
 		Matrix t = new Matrix(data);
-		int m = t.getRowDimension();
-		int n = t.getRowDimension();
-		DecimalFormat format = new DecimalFormat();
-		for (int i = 0; i < m && i < n; i++) {
-			t.print(format, 1);
-		}
+		DecimalFormat format = new java.text.DecimalFormat("#.## ");
+		t.print(format, 4);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
 		
 	}
+	
+	/*
+	 * Test print with number format with format and width
+	 */
+	@Test
+	public void testPrintNumFormatWD() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), new java.text.DecimalFormat("#.## "), 4);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
+	}
+	
+	/*
+	 * Test print with number format with W and D parameters
+	 */
+	@Test
+	public void testPrintNumFormatW() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), 4, 1);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
+	}
+	
 	
 	/*
 	 * Tests the get method.
@@ -230,7 +272,7 @@ public class MatrixTest {
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
-		assertEquals(m.norm1(), 2.4, 0);
+		assertEquals(m.norm1(), 1.7999999999999998, 0);
 	}
 	
 	/*
@@ -241,7 +283,6 @@ public class MatrixTest {
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
-		System.out.print(m.normF());
 		assertEquals(m.normF(), 1.688, .001);
 	}
 	
@@ -336,4 +377,99 @@ public class MatrixTest {
 		}
 		assertArrayEquals(expected.getArray(), actual.getArray());	
 	}
+	
+	/*
+	 * Test identity, creates identity matrix with mxn dimensions
+	 */
+	@Test
+	public void testidentity() {
+		double[][] data1 = {{1.0,0.0,0.0,0.0},{0.0,1.0,0.0,0.0},{0.0,0.0,1.0,0.0},{0.0,0.0,0.0,1.0}};
+		
+		Matrix expected = new Matrix(data1);
+		Matrix actual = Matrix.identity(4, 4);
+		assertArrayEquals(expected.getArray(), actual.getArray());	
+	}
+	
+	/*
+	 * Tests the normInF method.
+	 */
+	@Test
+	public void testnormInF()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		System.out.println(m.norm1());
+		assertEquals(m.normInF(), 2.4, 0);
+	}
+	
+	/*
+	 * Tests the getColumnPackedCopy method.
+	 */
+	@Test
+	public void testgetColumnPackedCopy()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		double [] actual = m.getColumnPackedCopy();
+		double[] data2 = {.1,.4,.7,.2,.5,.8,.3,.6,.9};
+		assertArrayEquals(actual, data2, 0);
+	}
+	
+	/*
+	 * Tests the uminus method.
+	 */
+	@Test
+	public void testuminus()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m = m.uminus();
+		double[][] actual = m.getArray();
+		double[][] expected = {{-.1,-.2,-.3}, {-.4,-.5,-.6}, {-.7,-.8,-.9}};
+		assertArrayEquals(actual, expected);
+	}
+	
+	/*
+	 * Tests the timesequals method.
+	 */
+	@Test
+	public void timesequals()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m = m.timesEquals(3.0);
+		double[][] actual = m.getArray();
+		double[][] expected = {{.3,.6,.9}, {1.2,1.5,1.8}, {2.1,2.4,2.7}};
+		assertArrayEquals(actual, expected);
+	}
+	
+	
+	
+	
+	
+	/*
+	 * Tests Transpose
+	 */
+	@Test
+	public void testTranspose() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{0.1, 1.1, 2.1, 3.1},{0.2, 1.2, 2.2, 3.2},{0.3, 1.3, 2.3, 3.3},{0.4, 1.4, 2.4, 3.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = x.transpose();
+		assertArrayEquals(new Matrix(data2).getArray(), y.getArray());
+	}
+	
+	/*
+	 * Tests getRowPackedCopy
+	 */
+	@Test
+	public void testGetRowPackedCopy() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[] data2 = {0.1, 0.2, 0.3, 0.4, 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4}; 
+		Matrix x = new Matrix(data1);
+		assertArrayEquals(x.getRowPackedCopy(), data2, 0);
+	}
+	
+	
+	
 }

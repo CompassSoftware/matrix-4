@@ -169,7 +169,7 @@ public class Matrix
 		Matrix M = new Matrix(m,n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				M.matrix[i][j] = r.nextDouble();
+				M.matrix[i][j] = r.nextDouble() * 10;
 			}
 		}
 		return M;	
@@ -281,9 +281,9 @@ public class Matrix
 	{
 		for (int i = 0; i < m; i++) 
 		{
-			for (int j = 0; j < n; j++) 
+			for (int j = 0; j < w; j++) 
 			{
-				output.print(String.format("%.df", (matrix[i][j])));
+				output.print(String.format("%." + d +"f ", (matrix[i][j])));
 			}
 			output.println();
 		}
@@ -497,7 +497,7 @@ public class Matrix
 		{
 			for(int j = 0; j < m; j++)
 			{
-				temp += Math.abs(matrix[i][j]);
+				temp += Math.abs(matrix[j][i]);
 			}
 			if(temp > sum)
 			{
@@ -554,7 +554,7 @@ public class Matrix
 	}
 	
 	/**
-	 * transpose - performs matrix transpose
+	 * transpose - performs matrix transposes
 	 * 
 	 * @return A'
 	 */
