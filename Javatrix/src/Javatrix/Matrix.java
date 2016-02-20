@@ -567,4 +567,62 @@ public class Matrix
 		}
 		return new Matrix(A);
 	}
+	
+	/**
+	 * arrayLeftDivide - element by element left division (C = A.\B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayLeftDivide(Matrix B) {
+		double[][] C = this.getArray();
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				C[i][j] = B.getArray()[i][j] / matrix[i][j];
+			}
+		}
+		return new Matrix(C);
+	}
+	
+	/**
+	 * arrayLeftDivideEquals - element by element left division in place (A = A.\B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayLeftDivideEquals(Matrix B) {
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				matrix[i][j] = B.getArray()[i][j] / matrix[i][j];
+			}
+		}
+		return this;
+	}
+	
+	/**
+	 * arrayRightDivide - element by element right division (C = A./B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayRightDivide(Matrix B) {
+		double[][] C = this.getArray();
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				C[i][j] = matrix[i][j] / B.getArray()[i][j];
+			}
+		}
+		return new Matrix(C);
+	}
+	
+	/**
+	 * arrayRightDivideEquals - element by element right division in place (A = A./B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayRightDivideEquals(Matrix B) {
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				matrix[i][j] = matrix[i][j] / B.getArray()[i][j];
+			}
+		}
+		return this;
+	}
 }
