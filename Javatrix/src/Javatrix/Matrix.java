@@ -624,5 +624,6 @@ public class Matrix
 			}
 		}
 		return this;
+		
 	}
 }
