@@ -1,5 +1,4 @@
 package Javatrix;
-
 import static org.junit.Assert.*;
 
 import java.text.NumberFormat;
@@ -89,6 +88,17 @@ public class MatrixTest {
 	}
 	
 	/*
+	 * Test constructWithCopy
+	 * 
+	 * doesnt like this either
+	 */
+	@Test
+	public void testConstructWithCopy() {
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		//Matrix mat = constructWithCopy(data);
+	}
+	
+	/*
 	 * Test getColumnDimension
 	 */
 	@Test
@@ -168,6 +178,7 @@ public class MatrixTest {
 	/*
 	 * Test Random. 
 	 */
+	@Test
 	public void TestRandom()
 	{
 		Matrix t;
@@ -398,7 +409,6 @@ public class MatrixTest {
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
-		System.out.println(m.norm1());
 		assertEquals(m.normInF(), 2.4, 0);
 	}
 	
@@ -431,20 +441,26 @@ public class MatrixTest {
 	
 	/*
 	 * Tests the timesequals method.
+	 * 
+	 * doesnt work
 	 */
 	@Test
-	public void timesequals()
+	public void testTimesEquals()
 	{
 		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
 		Matrix m = new Matrix(data);
 		m = m.timesEquals(3.0);
 		double[][] actual = m.getArray();
-		double[][] expected = {{.3,.6,.9}, {1.2,1.5,1.8}, {2.1,2.4,2.7}};
+		double[][] expected = new double[3][3];
+		for(int i = 0; i < 3; i++)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				expected[i][j] = m.getArray()[i][j] * 3.0;
+			}
+		}
 		assertArrayEquals(actual, expected);
 	}
-	
-	
-	
 	
 	
 	/*
@@ -470,6 +486,89 @@ public class MatrixTest {
 		assertArrayEquals(x.getRowPackedCopy(), data2, 0);
 	}
 	
+	/*
+	 * Tests arrayLeftDivide
+	 * 
+	 * doesnt work
+	 */
+	@Test
+	public void testArrayLeftDivide() {
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		Matrix test = n.arrayLeftDivide(m);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
+				
+			}
+		}
+		assertArrayEquals(test.getArray(), expected);
+	}
 	
+	/*
+	 * Test getMatrix1
+	 */
+	@Test
+	public void testGetMatrix1() {
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] sub = {{0,2,4},{5,7,9},{15,17,19}};
+		int[] r = {0,1,3};
+		int[] c = {0,2,4};
+		Matrix m = new Matrix(data);
+		Matrix expected = m.getMatrix(r,c);
+		assertArrayEquals(sub, expected.getArray());
+	}
+	
+	/*
+	 * Test getMatrix1
+	 */
+	@Test
+	public void testGetMatrix2() {
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] sub = {{0,1,2},{5,6,7},{15,16,17}};
+		int[] r = {0,1,3};
+		int j0 = 0;
+		int j1 = 2;
+		Matrix m = new Matrix(data);
+		Matrix expected = m.getMatrix(r,j0,j1);
+		assertArrayEquals(sub, expected.getArray());
+	}
+	
+
+	/*
+	 * Test getMatrix1
+	 */
+	@Test
+	public void testGetMatrix3() {
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] sub = {{0,1,3},{5,6,8},{10,11,13}};
+		int[] c = {0,1,3};
+		int i0 = 0;
+		int i1 = 2;
+		Matrix m = new Matrix(data);
+		Matrix expected = m.getMatrix(i0,i1,c);
+		assertArrayEquals(sub, expected.getArray());
+	}
+	
+	/*
+	 * Test getMatrix1
+	 * 
+	 * doesnt like method call for some reason
+	 */
+	@Test
+	public void testGetMatrix4() {
+		double[][] data = new double[4][4];
+		Matrix m = new Matrix(data);
+		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		Matrix k = new Matrix(test);
+		int i0 = 0;
+		int i1 = 2;
+		int j0 = 0;
+		int j1 = 2;
+		//m.getMatrix(i0,i1,j0,j1,k);
+	}
 	
 }

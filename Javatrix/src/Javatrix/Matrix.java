@@ -1,7 +1,11 @@
 package Javatrix;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.*;
 import java.util.Random;
+
+import org.junit.Test;
 
 public class Matrix 
 {
@@ -100,6 +104,23 @@ public class Matrix
 				matrix[i][j] = s;
 			}
 		}
+	}
+	
+	/**
+	 * constructWithCopy - constructs matrix copy from 2D array
+	 * 
+	 * @return Matrix copy
+	 */
+	public static Matrix constructWithCopy(double[][] arr) {
+		int row = arr.length;
+		int col = arr[0].length;
+		double[][] cp = new double[row][col];
+		for (int i = 0; i < row; i++) {
+			for (int j  = 0; j < col; j++) {
+				cp[i][j] = arr[i][j];
+			}
+		}
+		return new Matrix(cp);
 	}
 	
 	/**
@@ -625,5 +646,117 @@ public class Matrix
 		}
 		return this;
 		
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int[] r, int[] c) {
+		double[][] sub = new double[r.length][c.length];
+		for (int i = 0; i < r.length; i++) {
+			for (int j = 0; j < c.length; j++) {
+				sub[i][j] = matrix[r[i]][c[j]];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int[] r, int j0, int j1) {
+		int size = j1 - j0 + 1;
+		double[][] sub = new double[r.length][size];
+		for (int i = 0; i < r.length; i++) {
+			for (int j = j0; j <= j1; j++) {
+				sub[i][j] = matrix[r[i]][j];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int i0, int i1, int[] c) {
+		int size = i1 - i0 + 1;
+		double[][] sub = new double[size][c.length];
+		for (int i = i0; i <= i1; i++) {
+			for (int j = 0; j < c.length; j++) {
+				sub[i][j] = matrix[i][c[j]];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int i0, int i1, int j0, int j1) {
+		int rSize = i1 - i0 + 1;
+		int cSize = j1 - j0 + 1;
+		double[][] sub = new double[rSize][cSize];
+		for (int i = i0; i <= i1; i++) {
+			for (int j = j0; j <= j1; j++) {
+				sub[i][j] = matrix[i][j];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int[] r, int[] c, Matrix X) {
+		for (int i = 0; i < r.length; i++) {
+			for (int j = 0; j < c.length; j++) {
+				matrix[r[i]][c[j]] = X.getArray()[r[i]][c[j]];
+			}
+		}
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int[] r, int j0, int j1, Matrix X) {
+		for (int i = 0; i < r.length; i++) {
+			for (int j = j0; j <= j1; j++) {
+				matrix[r[i]][j] = X.getArray()[r[i]][j];
+			}
+		}
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int i0, int i1, int[] c, Matrix X) {
+		for (int i = i0; i <= i1; i++) {
+			for (int j = 0; j < c.length; j++) {
+				matrix[i][c[j]] = X.getArray()[i][c[j]];
+			}
+		}
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int i0, int i1, int j0, int j1, Matrix X) {
+		for (int i = i0; i <= i1; i++) {
+			for (int j = j0; j <= j1; j++) {
+				matrix[i][j] = X.getArray()[i][j];
+			}
+		}
 	}
 }
