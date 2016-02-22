@@ -471,7 +471,7 @@ public class MatrixTest {
 	}
 	
 	/*
-	 * Tests the timesequals method.
+	 * Tests the timesEquals method.
 	 */
 	@Test
 	public void testTimesEquals()
@@ -491,7 +491,46 @@ public class MatrixTest {
 		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
+	/*
+	 * Tests array times
+	 */
+	@Test
+	public void testArrayTimes()
+	{
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		Matrix test = m.arrayTimes(n);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < n.getRowDimension(); i++) {
+			for (int j  = 0; j < n.getColumnDimension(); j++) {
+				expected[i][j] = m.getArray()[i][j] * n.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(test.getArray(), expected);
+	}
 	
+	/*
+	 * Tests array times equals
+	 */
+	@Test
+	public void testArrayTimesEquals()
+	{
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < n.getRowDimension(); i++) {
+			for (int j  = 0; j < n.getColumnDimension(); j++) {
+				expected[i][j] = m.getArray()[i][j] * n.getArray()[i][j];
+			}
+		}
+		assertArrayEquals(m.getArray(), expected);
+	}
+	
+
 	/*
 	 * Tests Transpose
 	 */
@@ -531,6 +570,48 @@ public class MatrixTest {
 		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
+	/*
+	 * Tests arrayLeftDivideEquals
+	 * 
+	 */
+	@Test
+	public void testArrayLeftDivideEquals() {
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		Matrix test = m.arrayLeftDivideEquals(n);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
+				
+			}
+		}
+		assertArrayEquals(test.getArray(), expected);
+	}
+	
+	/*
+	 * Tests arrayRightDivideEquals
+	 * 
+	 */
+	@Test
+	public void testArrayRightDivideEquals() {
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		Matrix test = m.arrayRightDivideEquals(n);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
+				
+			}
+		}
+		assertArrayEquals(test.getArray(), expected);
+	}
+
 	/*
 	 * Tests arrayRightDivide
 	 */
@@ -624,4 +705,99 @@ public class MatrixTest {
 		m.getMatrix(i0, i1, j0, j1);
 	}
 	
+    /*
+	* Tests setMatrix(int[] r, int[] c, Matrix X) 
+	*/
+	@Test
+	public void testSetMatrix1()
+	{
+		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		double[][] data1 = {{1.0,2.0}, {4.0,5.0}};
+		Matrix a = new Matrix(test);
+        Matrix b = new Matrix(2,2);
+        a.setMatrix(new int[]{0,1}, new int[]{1,0}, b);
+        assertArrayEquals(b.getArray(), data1);
+	}
+	
+	/*
+	* Tests setMatrix(int[] r, int j0, int j1, Matrix X)
+	*/
+	@Test
+	public void testSetMatrix2()
+	{
+		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		double[][] data1 = {{0.0,2.0}, {0.0,5.0}};
+		Matrix a = new Matrix(test);
+        Matrix b = new Matrix(2,2);
+        a.setMatrix(new int[]{0,1}, 1, 1, b);
+        assertArrayEquals(b.getArray(), data1);
+	}
+	
+	/*
+	* Tests setMatrix(int i0, int i1, int[] c, Matrix X)
+	*/
+	@Test
+	public void testSetMatrix3()
+	{
+		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		double[][] data1 = {{0.0,0.0}, {4.0,5.0}};
+		Matrix a = new Matrix(test);
+        Matrix b = new Matrix(2,2);
+        a.setMatrix(1, 1, new int[]{0,1}, b);
+        assertArrayEquals(b.getArray(), data1);
+	}
+	
+	/*
+	* Tests setMatrix(int i0, int i1, int j0, int j1, Matrix X)	
+	* */
+	@Test
+	public void testSetMatrix4()
+	{
+		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		double[][] data1 = {{0.0,0.0}, {0.0,5.0}};
+		Matrix a = new Matrix(test);
+        Matrix b = new Matrix(2,2);
+        a.setMatrix(1, 1, 1, 1, b);
+        assertArrayEquals(b.getArray(), data1);
+	}
+
+	/*
+	 * Tests times (scalar)
+	 * 
+	 */
+	@Test
+	public void testTimes1() {
+		double[][] data = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		Matrix m = new Matrix(data);
+		Matrix test = m.times(2.0);
+		double[][] actual = new double[m.getRowDimension()][m.getColumnDimension()];
+		for (int i = 0; i < m.getRowDimension(); i++) {
+			for (int j = 0; j < m.getColumnDimension(); j++) {
+				actual[i][j] = data[i][j]*2.0;
+			}
+		}
+		assertArrayEquals(test.getArray(), actual);
+	}
+	
+	/*
+	 * Tests times (linear)
+	 * 
+	 */
+	@Test
+	public void testTimes2() {
+		double[][] data = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		Matrix m = new Matrix(data);
+		double[][] test = {{2.0,3.0,4.0},{5.0,6.0,7.0},{8.0,9.0,10.0}};
+		Matrix B = new Matrix(test);
+		Matrix expected = m.times(B);
+		double[][] prod = new double[m.getRowDimension()][B.getColumnDimension()];
+		for (int i = 0; i < m.getRowDimension(); i++) {
+			for (int j = 0; j < B.getColumnDimension(); j++) {
+				for (int k = 0; k < m.getColumnDimension(); k++) {
+					prod[i][j] += m.getArray()[i][k] * B.getArray()[k][j];
+				}
+			}
+		}
+		assertArrayEquals(prod, expected.getArray());
+	}
 }

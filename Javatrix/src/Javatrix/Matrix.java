@@ -513,6 +513,40 @@ public class Matrix
 	}
 	
 	/**
+	 * times - Scalar
+	 * 
+	 * @param double s - the scalar to multiply the matrix by
+	 * @return Matrix (product)
+	 */
+	public Matrix times(double s) {
+		double[][] prod = new double[m][n];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				prod[i][j] = matrix[i][j]*s;
+			}
+		}
+		return new Matrix(prod);
+	}
+	
+	/**
+	 * times - linear algebraic
+	 * 
+	 * @param Matrix B
+	 * @return Matrix product
+	 */
+	public Matrix times(Matrix B) {
+		double[][] prod = new double[m][B.getColumnDimension()];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < B.getColumnDimension(); j++) {
+				for (int k = 0; k < n; k++) {
+					prod[i][j] += matrix[i][k] * B.getArray()[k][j];
+				}
+			}
+		}
+		return new Matrix(prod);
+	}
+	
+	/**
 	 * normF-returns Frobenius norm of a matrix.
 	 * @return sqrt of sum of squares of all elements.
 	 */
