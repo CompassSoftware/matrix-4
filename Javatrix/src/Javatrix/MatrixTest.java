@@ -107,8 +107,6 @@ public class MatrixTest {
 	
 	/*
 	 * Test constructWithCopy
-	 * 
-	 * 
 	 */
 	@Test
 	public void testConstructWithCopy() {
