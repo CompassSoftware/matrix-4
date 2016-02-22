@@ -783,44 +783,6 @@ public class MatrixTest {
 		assertArrayEquals(prod, expected.getArray());
 	}
 	
-	/*
-	 * Tests times (scalar)
-	 * 
-	 */
-	@Test
-	public void testTimes1() {
-		double[][] data = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
-		Matrix m = new Matrix(data);
-		Matrix test = m.times(2.0);
-		double[][] actual = new double[m.getRowDimension()][m.getColumnDimension()];
-		for (int i = 0; i < m.getRowDimension(); i++) {
-			for (int j = 0; j < m.getColumnDimension(); j++) {
-				actual[i][j] = data[i][j]*2.0;
-			}
-		}
-		assertArrayEquals(test.getArray(), actual);
-	}
 	
-	/*
-	 * Tests times (linear)
-	 * 
-	 */
-	@Test
-	public void testTimes2() {
-		double[][] data = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
-		Matrix m = new Matrix(data);
-		double[][] test = {{2.0,3.0,4.0},{5.0,6.0,7.0},{8.0,9.0,10.0}};
-		Matrix B = new Matrix(test);
-		Matrix expected = m.times(B);
-		double[][] prod = new double[m.getRowDimension()][B.getColumnDimension()];
-		for (int i = 0; i < m.getRowDimension(); i++) {
-			for (int j = 0; j < B.getColumnDimension(); j++) {
-				for (int k = 0; k < m.getColumnDimension(); k++) {
-					prod[i][j] += m.getArray()[i][k] * B.getArray()[k][j];
-				}
-			}
-		}
-		assertArrayEquals(prod, expected.getArray());
-	}
 	
 }
