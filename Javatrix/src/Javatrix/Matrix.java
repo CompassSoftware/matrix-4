@@ -1,11 +1,7 @@
 package Javatrix;
 
-import static org.junit.Assert.assertArrayEquals;
-
-import java.io.*;
 import java.util.Random;
 
-import org.junit.Test;
 
 public class Matrix 
 {
@@ -753,7 +749,7 @@ public class Matrix
 	public void setMatrix(int[] r, int[] c, Matrix X) {
 		for (int i = 0; i < r.length; i++) {
 			for (int j = 0; j < c.length; j++) {
-				matrix[r[i]][c[j]] = X.getArray()[r[i]][c[j]];
+				X.matrix[r[i]][c[j]] = this.getArray()[r[i]][c[j]];
 			}
 		}
 	}
@@ -765,7 +761,7 @@ public class Matrix
 	public void setMatrix(int[] r, int j0, int j1, Matrix X) {
 		for (int i = 0; i < r.length; i++) {
 			for (int j = j0; j <= j1; j++) {
-				matrix[r[i]][j] = X.getArray()[r[i]][j];
+				X.matrix[r[i]][j] = this.getArray()[r[i]][j];
 			}
 		}
 	}
@@ -777,7 +773,7 @@ public class Matrix
 	public void setMatrix(int i0, int i1, int[] c, Matrix X) {
 		for (int i = i0; i <= i1; i++) {
 			for (int j = 0; j < c.length; j++) {
-				matrix[i][c[j]] = X.getArray()[i][c[j]];
+				X.matrix[i][c[j]] = this.getArray()[i][c[j]];
 			}
 		}
 	}
@@ -789,7 +785,7 @@ public class Matrix
 	public void setMatrix(int i0, int i1, int j0, int j1, Matrix X) {
 		for (int i = i0; i <= i1; i++) {
 			for (int j = j0; j <= j1; j++) {
-				matrix[i][j] = X.getArray()[i][j];
+				X.matrix[i][j] = this.getArray()[i][j];
 			}
 		}
 	}
