@@ -244,38 +244,62 @@ public class Matrix
 	 */
 	public void print(NumberFormat format, int width)
 	{
+		if(width <= 0) return;
+	
 		String pattern = "";
-		for(int i = 0; i < width-3; i++) pattern += "0";
 		if(width == 1) pattern = "0";
 		else if(width == 2) pattern = "00";
 		else if(width == 3) pattern = "0.0";
-		else if(width >= 4) pattern += ".00";
-		pattern += " ";
+		else if(width == 4) pattern += "0.00";
+		else {
+			for(int i = 0; i < width-3; i++) pattern += "0";
+			pattern += ".00";
+		}
 		((DecimalFormat)format).applyPattern(pattern);
 		
 		for (int i = 0; i < m; i++) 
 		{
 			for (int j = 0; j < n; j++) 
 			{
-				System.out.print(format.format(matrix[i][j]));
+				if(matrix[i][j] < 0)
+					System.out.print(format.format(matrix[i][j]) + " ");
+				else
+					System.out.print(" " + format.format(matrix[i][j]) + " ");
 			}
 			System.out.println();
 		}
 	}
 	
 	/**
-	 * print - Print the matrix to stdout.
+	 * print - Print the matrix to output.
 	 * 
-	 * @param format - java.text.NumberFormat
-	 * @param width - represents how many columns to print. 
+	 * @param output - The PrintWriter to write to.
+	 * @param format - The NumberFormat object to use.
+	 * @param width - The column width. 
 	 */
 	public void print(java.io.PrintWriter output, java.text.NumberFormat format, int width)
 	{
+		if(width <= 0) return;
+		
+		String pattern = "";
+		if(width == 1) pattern = "0";
+		else if(width == 2) pattern = "00";
+		else if(width == 3) pattern = "0.0";
+		else if(width == 4) pattern += "0.00";
+		else {
+			for(int i = 0; i < width-3; i++) pattern += "0";
+			pattern += ".00";
+		}
+		((DecimalFormat)format).applyPattern(pattern);
+		
 		for (int i = 0; i < m; i++) 
 		{
-			for (int j = 0; j < width; j++) 
+			for (int j = 0; j < n; j++) 
 			{
-				output.print(format.format(matrix[i][j]));
+				if(matrix[i][j] < 0)
+					output.print(format.format(matrix[i][j]) + " ");
+				else
+					output.print(" " + format.format(matrix[i][j]) + " ");
 			}
 			output.println();
 		}
@@ -284,17 +308,19 @@ public class Matrix
 	/**
 	 * print - Print the matrix to the output stream. 
 	 * 
-	 * @param output
-	 * @param w
-	 * @param d
+	 * @param output - The output stream.
+	 * @param w - Column width.
+	 * @param d - Number of digits after the decimal.
 	 */
 	public void print(java.io.PrintWriter output, int w, int d)
 	{
+		if(w <= 0 || d < 0) return;
+		
 		for (int i = 0; i < m; i++) 
 		{
 			for (int j = 0; j < n; j++) 
 			{
-				output.print(String.format("%.df", (matrix[i][j])));
+				output.print(String.format("%" + w + "." + d + "f", (matrix[i][j])));
 			}
 			output.println();
 		}
@@ -307,14 +333,14 @@ public class Matrix
 	 */
 	public Matrix plus(Matrix B)
 	{
-		Matrix C = new Matrix(new double[m][n]);
 		if(B.m == this.m && B.n == this.n)
 		{
+			Matrix C = new Matrix(new double[m][n]);
 			for(int i = 0; i < m; i++)
 			{
 				for(int j = 0; j < n; j++)
 				{
-					C.getArray()[i][j] = matrix[i][j] + B.getArray()[i][j];
+					C.set(i, j, matrix[i][j] + B.get(i, j));
 				}
 			}
 			return C;
@@ -334,14 +360,14 @@ public class Matrix
 	 */
 	public Matrix minus(Matrix B)
 	{
-		Matrix C = new Matrix(new double[m][n]);
 		if(B.m == this.m && B.n == this.n)
 		{
+			Matrix C = new Matrix(new double[m][n]);
 			for(int i = 0; i < m; i++)
 			{
 				for(int j = 0; j < n; j++)
 				{
-					C.getArray()[i][j] = matrix[i][j] - B.getArray()[i][j];
+					C.set(i, j, matrix[i][j] - B.get(i, j));
 				}
 			}
 			return C;
@@ -357,7 +383,7 @@ public class Matrix
 	/**
 	 * minusEquals - Return the difference of the matrix and parameter matrix.
 	 * 				-Changes class matrix to returned value. 
-	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @param B - Matrix to be subtracted from the current matrix. Must be same dimension.
 	 * @return A - B
 	 */
 	public Matrix minusEquals(Matrix B)
@@ -368,7 +394,7 @@ public class Matrix
 			{
 				for(int j = 0; j < n; j++)
 				{
-					matrix[i][j] = matrix[i][j] - B.getArray()[i][j];
+					matrix[i][j] -= B.get(i, j);
 				}
 			}
 			return this;
@@ -396,7 +422,7 @@ public class Matrix
 			{
 				for(int j = 0; j < n; j++)
 				{
-					matrix[i][j] = matrix[i][j] + B.getArray()[i][j];
+					matrix[i][j] += B.get(i, j);
 				}
 			}
 			return this;
@@ -417,21 +443,9 @@ public class Matrix
 	public static Matrix identity(int m, int n)
 	{
 		double[][] data = new double[m][n];
-		int spot = 0;
-		for(int i = 0; i < m; i++)
+		for(int i = 0; i < m && i < n; i++)
 		{
-			for(int j = 0; j < n; j++)
-			{
-				if(j == spot)
-				{
-					data[i][j] = 1;
-				}
-				else
-				{
-					data[i][j] = 0;
-				}
-			}
-			spot++;
+			data[i][i] = 1;
 		}
 		return new Matrix(data);
 		
@@ -449,7 +463,7 @@ public class Matrix
 		{
 			for(int j = 0; j < n; j++)
 			{
-				matrix[i][j] = matrix[i][j] * s;
+				matrix[i][j] *= s;
 			}
 		}
 		return this;
@@ -479,9 +493,10 @@ public class Matrix
 	public double normInF()
 	{
 		double sum = 0;
-		double temp = 0;
+		double temp;
 		for(int i = 0; i < m; i++)
 		{
+			temp = 0;
 			for(int j = 0; j < n; j++)
 			{
 				temp += Math.abs(matrix[i][j]);
@@ -490,31 +505,29 @@ public class Matrix
 			{
 				sum = temp;
 			}
-			temp = 0;
 		}
 		return sum;
 	}
 	
 	/**
 	 * norm1-returns one norm of a matrix.
-	 * @return maximum column sum.
-	 * test
+	 * @return largest sum of absolute values from each column.
 	 */
 	public double norm1()
 	{
 		double sum = 0;
-		double temp = 0;
+		double temp;
 		for(int i = 0; i < n; i++)
 		{
+			temp = 0;
 			for(int j = 0; j < m; j++)
 			{
-				temp += Math.abs(matrix[i][j]);
+				temp += Math.abs(matrix[j][i]);
 			}
 			if(temp > sum)
 			{
 				sum = temp;
 			}
-			temp = 0;
 		}
 		return sum;
 	}
@@ -528,7 +541,7 @@ public class Matrix
 		double[] copy = new double[m*n];
 		for (int i = 0; i < getRowDimension(); i++) {
 			for (int j = 0; j < getColumnDimension(); j++) {
-				copy[j * m + i] = matrix[i][j]; 
+				copy[i * n + j] = matrix[i][j];
 			}
 		}
 		return copy;
@@ -541,9 +554,9 @@ public class Matrix
 	 */
 	public double[] getRowPackedCopy() {
 		double[] copy = new double[m*n];
-		for (int i = 0; i < getRowDimension(); i++) {
-			for (int j = 0; j < getColumnDimension(); j++) {
-				copy[i * n + j] = matrix[i][j]; 
+		for (int i = 0; i < getColumnDimension(); i++) {
+			for (int j = 0; j < getRowDimension(); j++) {
+				copy[i * m + j] = matrix[j][i]; 
 			}
 		}
 		return copy;
