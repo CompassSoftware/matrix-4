@@ -466,6 +466,40 @@ public class Matrix
 	}
 	
 	/**
+	 * arrayTimes - multiplies the class matrix, and another matrix, returns the product matrix
+	 * 
+	 * @param Matrix B
+	 * @return Product Matrix
+	 */
+	public Matrix arrayTimes(Matrix B) {
+		double[][] b = B.getArray();
+		double[][] prod = new double[B.getRowDimension()][B.getColumnDimension()];
+		for (int i = 0; i < B.getRowDimension(); i++) {
+			for (int j  = 0; j < B.getColumnDimension(); j++) {
+				prod[i][j] = matrix[i][j] * b[i][j];
+			}
+		}
+		return new Matrix(prod);
+	}
+	
+	/**
+	 * arrayTimes - multiplies the class matrix, and another matrix, returns the product matrix
+	 * 
+	 * @param Matrix B
+	 * @return Product Matrix
+	 */
+	public Matrix arrayTimesEquals(Matrix B) {
+		double[][] b = B.getArray();
+		double[][] prod = new double[B.getRowDimension()][B.getColumnDimension()];
+		for (int i = 0; i < B.getRowDimension(); i++) {
+			for (int j  = 0; j < B.getColumnDimension(); j++) {
+				matrix[i][j] = matrix[i][j] * b[i][j];
+			}
+		}
+		return new Matrix(prod);
+	}
+	
+	/**
 	 * normF-returns Frobenius norm of a matrix.
 	 * @return sqrt of sum of squares of all elements.
 	 */
