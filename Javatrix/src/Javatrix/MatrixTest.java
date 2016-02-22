@@ -564,7 +564,7 @@ public class MatrixTest {
 	}
 	
 	/*
-	 * Test getMatrix1
+	 * Test getMatrix2
 	 */
 	@Test
 	public void testGetMatrix2() {
@@ -580,7 +580,7 @@ public class MatrixTest {
 	
 
 	/*
-	 * Test getMatrix1
+	 * Test getMatrix3
 	 */
 	@Test
 	public void testGetMatrix3() {
@@ -595,21 +595,22 @@ public class MatrixTest {
 	}
 	
 	/*
-	 * Test getMatrix1
+	 * Test getMatrix4
 	 * 
-	 * doesnt like method call for some reason
 	 */
 	@Test
 	public void testGetMatrix4() {
-		double[][] data = new double[4][4];
+		double[][] data = new double[2][2];
 		Matrix m = new Matrix(data);
 		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		double[][] expected = {{1.0,2.0},{4.0,5.0}};
 		Matrix k = new Matrix(test);
 		int i0 = 0;
-		int i1 = 2;
+		int i1 = 1;
 		int j0 = 0;
-		int j1 = 2;
-		//m.getMatrix(i0,i1,j0,j1,k);
+		int j1 = 1;
+		m = k.getMatrix(i0,i1,j0,j1);
+		assertArrayEquals(expected, m.getArray());
 	}
 	
 }
