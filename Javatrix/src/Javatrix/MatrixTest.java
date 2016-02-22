@@ -2,19 +2,17 @@ package Javatrix;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+import java.util.Arrays;
 
 import org.junit.Test;
 public class MatrixTest {
 	private double delta = 1e-9;
-
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	
 	/*
 	 * Test the basic constructor, and its exception case.
 	 */
@@ -76,6 +74,22 @@ public class MatrixTest {
 	}
 	
 	/*
+	 * Tests the clone method. 
+	 */
+	@Test
+	public void testClone()
+	{
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		Matrix a = new Matrix(data);
+		Object b = a.clone();
+		Matrix a2 = (Matrix) b;
+		assertTrue(Arrays.deepEquals(data, a.getArray()));
+	    assertTrue(Arrays.deepEquals(data, a2.getArray()));
+	    assertEquals(a.getRowDimension(), a2.getRowDimension());
+	    assertEquals(a.getColumnDimension(), a2.getColumnDimension());
+	}
+	
+	/*
 	 * Test the constructor that initializes a matrix of zeros.
 	 */
 	@Test
@@ -95,6 +109,16 @@ public class MatrixTest {
 		Matrix m = new Matrix(3, 4, 1f);
 		double[][] actual = m.getArray();
 		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
+	}
+	
+	/*
+	 * Test constructWithCopy
+	 */
+	@Test
+	public void testConstructWithCopy() {
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix mat = Matrix.constructWithCopy(data);
+		assertTrue(Arrays.deepEquals(data, mat.getArray()));
 	}
 	
 	/*
@@ -180,6 +204,23 @@ public class MatrixTest {
 	}
 	
 	/*
+	 * Test Random. 
+	 */
+	@Test
+	public void TestRandom()
+	{
+		Matrix t;
+		t = Matrix.random(4,4);
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				assertNotNull(t.get(i, j));
+			}
+		}
+	}
+	
+	/*
 	 * Test print with number format
 	 */
 	@Test
@@ -188,38 +229,49 @@ public class MatrixTest {
 			"-00  00  00  00 \n 01 -01  01  01 \n 02  02 -02  02 \n 03  03  03 -03 \n" +
 			"-0.1  0.2  0.3  0.4 \n 1.1 -1.2  1.3  1.4 \n 2.1  2.2 -2.3  2.4 \n 3.1  3.2  3.3 -3.4 \n" +
 			"-0.10  0.20  0.30  0.40 \n 1.10 -1.20  1.30  1.40 \n 2.10  2.20 -2.30  2.40 \n 3.10  3.20  3.30 -3.40 \n";
-		try {
-			PrintStream ps = new PrintStream("test");
-			PrintStream oldOut = System.out;
-			System.setOut(ps);
-			
-			double[][] data = {{-0.1,0.2,0.3,0.4},{1.1,-1.2,1.3,1.4},{2.1,2.2,-2.3,2.4},{3.1,3.2,3.3,-3.4}};
-			Matrix t = new Matrix(data);
-			DecimalFormat format = new DecimalFormat();
-			format.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-			t.print(format, -1);
-			t.print(format, 1);
-			t.print(format, 2);
-			t.print(format, 3);
-			t.print(format, 4);
-
-			ps.close();
-			System.setOut(oldOut);
-		} catch(FileNotFoundException e) {
-			fail("Could not open file for stdout redirect:\n" + e);
-		}
+		PrintStream oldOut = System.out;
+		System.setOut(new PrintStream(outContent));
 		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("test"));
-			String line, actual = "";
-			while((line = br.readLine()) != null) {actual += line + "\n";}
-			br.close();
-			assertEquals(expected, actual);
-		} catch(FileNotFoundException e) {
-			fail("Could not open file to read output:\n" + e);
-		} catch(IOException e) {
-			fail("Could not read line:\n" + e);
-		}
+		double[][] data = {{-0.1,0.2,0.3,0.4},{1.1,-1.2,1.3,1.4},{2.1,2.2,-2.3,2.4},{3.1,3.2,3.3,-3.4}};
+		Matrix t = new Matrix(data);
+		DecimalFormat format = new DecimalFormat("#.## ");
+		t.print(format, -1);
+		t.print(format, 1);
+		t.print(format, 2);
+		t.print(format, 3);
+		t.print(format, 4);
+
+		System.setOut(oldOut);
+		
+		assertEquals(expected, outContent.toString());
+	}
+
+	/*
+	 * Test print with number format with format and width
+	 */
+	@Test
+	public void testPrintNumFormatWD() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), new java.text.DecimalFormat("#.## "), 4);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
+	}
+
+	/*
+	 * Test print with number format with W and D parameters
+	 */
+	@Test
+	public void testPrintNumFormatW() {
+		System.setOut(new PrintStream(outContent));
+		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		Matrix t = new Matrix(data);
+		t.print(new PrintWriter(System.out, true), 4, 1);
+		assertEquals(outContent.toString().substring(0, 16),
+		"0.1 0.2 0.3 0.4 ");
+		
 	}
 
 	/*
@@ -364,4 +416,210 @@ public class MatrixTest {
 		Matrix result = x.minusEquals(f);
 		assertEquals(null, result);
 	}
+	
+	/*
+	 * Test identity, creates identity matrix with mxn dimensions
+	 */
+	@Test
+	public void testidentity() {
+		double[][] data1 = {{1.0,0.0,0.0,0.0},{0.0,1.0,0.0,0.0},{0.0,0.0,1.0,0.0},{0.0,0.0,0.0,1.0}};
+		
+		Matrix expected = new Matrix(data1);
+		Matrix actual = Matrix.identity(4, 4);
+		assertArrayEquals(expected.getArray(), actual.getArray());	
+	}
+	
+	/*
+	 * Tests the normInF method.
+	 */
+	@Test
+	public void testnormInF()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		assertEquals(m.normInF(), 2.4, 0);
+	}
+	
+	/*
+	 * Tests the getColumnPackedCopy method.
+	 */
+	@Test
+	public void testgetColumnPackedCopy()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		double [] actual = m.getColumnPackedCopy();
+		double[] data2 = {.1,.4,.7,.2,.5,.8,.3,.6,.9};
+		assertArrayEquals(actual, data2, 0);
+	}
+	
+	/*
+	 * Tests the uminus method.
+	 */
+	@Test
+	public void testuminus()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m = m.uminus();
+		double[][] actual = m.getArray();
+		double[][] expected = {{-.1,-.2,-.3}, {-.4,-.5,-.6}, {-.7,-.8,-.9}};
+		assertArrayEquals(actual, expected);
+	}
+	
+	/*
+	 * Tests the timesequals method.
+	 * 
+	 * 
+	 */
+	@Test
+	public void testTimesEquals()
+	{
+		double[][] data = {{.1,.2,.3}, {.4,.5,.6}, {.7,.8,.9}};
+		Matrix m = new Matrix(data);
+		m = m.timesEquals(3.0);
+		double[][] actual = m.getArray();
+		double[][] expected = new double[3][3];
+		for(int i = 0; i < 3; i++)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				expected[i][j] = data[i][j] * 3.0;
+			}
+		}
+		assertArrayEquals(actual, expected);
+	}
+	
+	
+	/*
+	 * Tests Transpose
+	 */
+	@Test
+	public void testTranspose() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[][] data2 = {{0.1, 1.1, 2.1, 3.1},{0.2, 1.2, 2.2, 3.2},{0.3, 1.3, 2.3, 3.3},{0.4, 1.4, 2.4, 3.4}};
+		Matrix x = new Matrix(data1);
+		Matrix y = x.transpose();
+		assertArrayEquals(new Matrix(data2).getArray(), y.getArray());
+	}
+	
+	/*
+	 * Tests getRowPackedCopy
+	 */
+	@Test
+	public void testGetRowPackedCopy() {
+		double[][] data1 = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
+		double[] data2 = {0.1, 0.2, 0.3, 0.4, 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4}; 
+		Matrix x = new Matrix(data1);
+		assertArrayEquals(x.getRowPackedCopy(), data2, 0);
+	}
+	
+	/*
+	 * Tests arrayLeftDivide
+	 * 
+	 * doesnt work
+	 */
+	@Test
+	public void testArrayLeftDivide() {
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		Matrix test = m.arrayLeftDivide(n);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
+				
+			}
+		}
+		assertArrayEquals(test.getArray(), expected);
+	}
+	
+	/*
+	 * Tests arrayLeftDivide
+	 * 
+	 * doesnt work
+	 */
+	@Test
+	public void testArrayRightDivide() {
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		Matrix test = m.arrayRightDivide(n);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
+				
+			}
+		}
+		assertArrayEquals(test.getArray(), expected);
+	}
+	
+	/*
+	 * Test getMatrix1
+	 */
+	@Test
+	public void testGetMatrix1() {
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] sub = {{0,2,4},{5,7,9},{15,17,19}};
+		int[] r = {0,1,3};
+		int[] c = {0,2,4};
+		Matrix m = new Matrix(data);
+		Matrix expected = m.getMatrix(r,c);
+		assertArrayEquals(sub, expected.getArray());
+	}
+	
+	/*
+	 * Test getMatrix2
+	 */
+	@Test
+	public void testGetMatrix2() {
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] sub = {{0,1,2},{5,6,7},{15,16,17}};
+		int[] r = {0,1,3};
+		int j0 = 0;
+		int j1 = 2;
+		Matrix m = new Matrix(data);
+		Matrix expected = m.getMatrix(r,j0,j1);
+		assertArrayEquals(sub, expected.getArray());
+	}
+	
+
+	/*
+	 * Test getMatrix3
+	 */
+	@Test
+	public void testGetMatrix3() {
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] sub = {{0,1,3},{5,6,8},{10,11,13}};
+		int[] c = {0,1,3};
+		int i0 = 0;
+		int i1 = 2;
+		Matrix m = new Matrix(data);
+		Matrix expected = m.getMatrix(i0,i1,c);
+		assertArrayEquals(sub, expected.getArray());
+	}
+	
+	/*
+	 * Test getMatrix4
+	 * 
+	 */
+	@Test
+	public void testGetMatrix4() {
+		double[][] data = new double[2][2];
+		Matrix m = new Matrix(data);
+		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		double[][] expected = {{1.0,2.0},{4.0,5.0}};
+		Matrix k = new Matrix(test);
+		int i0 = 0;
+		int i1 = 1;
+		int j0 = 0;
+		int j1 = 1;
+		m = k.getMatrix(i0,i1,j0,j1);
+		assertArrayEquals(expected, m.getArray());
+	}
+	
 }

@@ -105,6 +105,23 @@ public class Matrix
 	}
 	
 	/**
+	 * constructWithCopy - constructs matrix copy from 2D array
+	 * 
+	 * @return Matrix copy
+	 */
+	public static Matrix constructWithCopy(double[][] arr) {
+		int row = arr.length;
+		int col = arr[0].length;
+		double[][] cp = new double[row][col];
+		for (int i = 0; i < row; i++) {
+			for (int j  = 0; j < col; j++) {
+				cp[i][j] = arr[i][j];
+			}
+		}
+		return new Matrix(cp);
+	}
+	
+	/**
 	 * copy - makes a deep copy of a matrix
 	 * 
 	 * @return Matrix - deep copy of Matrix object
@@ -171,7 +188,7 @@ public class Matrix
 		Matrix M = new Matrix(m,n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				M.matrix[i][j] = r.nextDouble();
+				M.matrix[i][j] = r.nextDouble() * 10;
 			}
 		}
 		return M;	
@@ -470,6 +487,40 @@ public class Matrix
 	}
 	
 	/**
+	 * arrayTimes - multiplies the class matrix, and another matrix, returns the product matrix
+	 * 
+	 * @param Matrix B
+	 * @return Product Matrix
+	 */
+	public Matrix arrayTimes(Matrix B) {
+		double[][] b = B.getArray();
+		double[][] prod = new double[B.getRowDimension()][B.getColumnDimension()];
+		for (int i = 0; i < B.getRowDimension(); i++) {
+			for (int j  = 0; j < B.getColumnDimension(); j++) {
+				prod[i][j] = matrix[i][j] * b[i][j];
+			}
+		}
+		return new Matrix(prod);
+	}
+	
+	/**
+	 * arrayTimes - multiplies the class matrix, and another matrix, returns the product matrix
+	 * 
+	 * @param Matrix B
+	 * @return Product Matrix
+	 */
+	public Matrix arrayTimesEquals(Matrix B) {
+		double[][] b = B.getArray();
+		double[][] prod = new double[B.getRowDimension()][B.getColumnDimension()];
+		for (int i = 0; i < B.getRowDimension(); i++) {
+			for (int j  = 0; j < B.getColumnDimension(); j++) {
+				matrix[i][j] = matrix[i][j] * b[i][j];
+			}
+		}
+		return new Matrix(prod);
+	}
+	
+	/**
 	 * normF-returns Frobenius norm of a matrix.
 	 * @return sqrt of sum of squares of all elements.
 	 */
@@ -590,5 +641,176 @@ public class Matrix
 			}
 		}
 		return new Matrix(A);
+	}
+	
+	/**
+	 * arrayLeftDivide - element by element left division (C = A.\B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayLeftDivide(Matrix B) {
+		double[][] C = this.getArray();
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				C[i][j] = B.getArray()[i][j] / matrix[i][j];
+			}
+		}
+		return new Matrix(C);
+	}
+	
+	/**
+	 * arrayLeftDivideEquals - element by element left division in place (A = A.\B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayLeftDivideEquals(Matrix B) {
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				matrix[i][j] = B.getArray()[i][j] / matrix[i][j];
+			}
+		}
+		return this;
+	}
+	
+	/**
+	 * arrayRightDivide - element by element right division (C = A./B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayRightDivide(Matrix B) {
+		double[][] C = this.getArray();
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				C[i][j] = matrix[i][j] / B.getArray()[i][j];
+			}
+		}
+		return new Matrix(C);
+	}
+	
+	/**
+	 * arrayRightDivideEquals - element by element right division in place (A = A./B)
+	 * 
+	 * @return A.\B
+	 */
+	public Matrix arrayRightDivideEquals(Matrix B) {
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				matrix[i][j] = matrix[i][j] / B.getArray()[i][j];
+			}
+		}
+		return this;
+		
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int[] r, int[] c) {
+		double[][] sub = new double[r.length][c.length];
+		for (int i = 0; i < r.length; i++) {
+			for (int j = 0; j < c.length; j++) {
+				sub[i][j] = matrix[r[i]][c[j]];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int[] r, int j0, int j1) {
+		int size = j1 - j0 + 1;
+		double[][] sub = new double[r.length][size];
+		for (int i = 0; i < r.length; i++) {
+			for (int j = j0; j <= j1; j++) {
+				sub[i][j] = matrix[r[i]][j];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int i0, int i1, int[] c) {
+		int size = i1 - i0 + 1;
+		double[][] sub = new double[size][c.length];
+		for (int i = i0; i <= i1; i++) {
+			for (int j = 0; j < c.length; j++) {
+				sub[i][j] = matrix[i][c[j]];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * getMatrix - returns a submatrix
+	 * 
+	 * @return Matrix (submatrix)
+	 */
+	public Matrix getMatrix(int i0, int i1, int j0, int j1) {
+		int rSize = i1 - i0 + 1;
+		int cSize = j1 - j0 + 1;
+		double[][] sub = new double[rSize][cSize];
+		for (int i = i0; i <= i1; i++) {
+			for (int j = j0; j <= j1; j++) {
+				sub[i][j] = matrix[i][j];
+			}
+		}
+		return new Matrix(sub);
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int[] r, int[] c, Matrix X) {
+		for (int i = 0; i < r.length; i++) {
+			for (int j = 0; j < c.length; j++) {
+				matrix[r[i]][c[j]] = X.getArray()[r[i]][c[j]];
+			}
+		}
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int[] r, int j0, int j1, Matrix X) {
+		for (int i = 0; i < r.length; i++) {
+			for (int j = j0; j <= j1; j++) {
+				matrix[r[i]][j] = X.getArray()[r[i]][j];
+			}
+		}
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int i0, int i1, int[] c, Matrix X) {
+		for (int i = i0; i <= i1; i++) {
+			for (int j = 0; j < c.length; j++) {
+				matrix[i][c[j]] = X.getArray()[i][c[j]];
+			}
+		}
+	}
+	
+	/**
+	 * setMatrix - sets a submatrix
+	 * 
+	 */
+	public void setMatrix(int i0, int i1, int j0, int j1, Matrix X) {
+		for (int i = i0; i <= i1; i++) {
+			for (int j = j0; j <= j1; j++) {
+				matrix[i][j] = X.getArray()[i][j];
+			}
+		}
 	}
 }
