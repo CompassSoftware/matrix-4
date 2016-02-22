@@ -2,9 +2,12 @@ package Javatrix;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
@@ -276,6 +279,26 @@ public class MatrixTest {
 		
 		assertEquals(expected, outContent.toString());
 	}
+	
+	/*
+	 * Test print with w and d
+	 */
+	@Test
+	public void testPrintWD() {
+		String expected = "-0.10  0.20  0.30  0.40 \r\n 1.10 -1.20  1.30  1.40 \r\n" +
+			" 2.10  2.20 -2.30  2.40 \r\n 3.10  3.20  3.30 -3.40 \r\n\r\n";
+		PrintStream oldOut = System.out;
+		System.setOut(new PrintStream(outContent));
+
+		double[][] data = {{-0.1,0.2,0.3,0.4},{1.1,-1.2,1.3,1.4},{2.1,2.2,-2.3,2.4},{3.1,3.2,3.3,-3.4}};
+		Matrix t = new Matrix(data);
+		t.print(-1, 1);
+		t.print(1, 2);
+
+		System.setOut(oldOut);
+		
+		assertEquals(expected, outContent.toString());
+	}
 
 	/*
 	 * Tests the get method.
@@ -498,17 +521,12 @@ public class MatrixTest {
 	public void testArrayTimes()
 	{
 		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
-		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		double[][] data1 = {{2.0,2.0,2.0},{2.0,2.0,2.0},{2.0,2.0,2.0}};
 		Matrix m = new Matrix(data);
 		Matrix n = new Matrix(data1);
-		Matrix test = m.arrayTimes(n);
-		double [][] expected = new double[3][3];
-		for (int i = 0; i < n.getRowDimension(); i++) {
-			for (int j  = 0; j < n.getColumnDimension(); j++) {
-				expected[i][j] = m.getArray()[i][j] * n.getArray()[i][j];
-			}
-		}
-		assertArrayEquals(test.getArray(), expected);
+		double[][] actual = m.arrayTimes(n).getArray();
+		double [][] expected = {{6.0,8.0,10.0},{8.0,10.0,12.0},{10.0,12.0,14.0}};
+		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
 	/*
@@ -518,16 +536,13 @@ public class MatrixTest {
 	public void testArrayTimesEquals()
 	{
 		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
-		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		double[][] data1 = {{2.0,2.0,2.0},{2.0,2.0,2.0},{2.0,2.0,2.0}};
 		Matrix m = new Matrix(data);
 		Matrix n = new Matrix(data1);
-		double [][] expected = new double[3][3];
-		for (int i = 0; i < n.getRowDimension(); i++) {
-			for (int j  = 0; j < n.getColumnDimension(); j++) {
-				expected[i][j] = m.getArray()[i][j] * n.getArray()[i][j];
-			}
-		}
-		assertArrayEquals(m.getArray(), expected);
+		m.arrayTimesEquals(n);
+		double[][] actual = m.getArray();
+		double [][] expected = {{6.0,8.0,10.0},{8.0,10.0,12.0},{10.0,12.0,14.0}};
+		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
 
@@ -564,9 +579,8 @@ public class MatrixTest {
 		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
 		Matrix m = new Matrix(data);
 		Matrix n = new Matrix(data1);
-		Matrix test = m.arrayLeftDivide(n);
+		double[][] actual = m.arrayLeftDivide(n).getArray();
 		double[][] expected = {{1d/3, 1d/4, 1d/5}, {1d/4, 1d/5, 1d/6}, {1d/5, 1d/6, 1d/7}}; 
-		double[][] actual = test.getArray();
 		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
@@ -580,15 +594,10 @@ public class MatrixTest {
 		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
 		Matrix m = new Matrix(data);
 		Matrix n = new Matrix(data1);
-		Matrix test = m.arrayLeftDivideEquals(n);
-		double [][] expected = new double[3][3];
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
-				
-			}
-		}
-		assertArrayEquals(test.getArray(), expected);
+		m.arrayLeftDivideEquals(n);
+		double[][] actual = m.getArray();
+		double[][] expected = {{1d/3, 1d/4, 1d/5}, {1d/4, 1d/5, 1d/6}, {1d/5, 1d/6, 1d/7}}; 
+		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
 	/*
@@ -597,19 +606,14 @@ public class MatrixTest {
 	 */
 	@Test
 	public void testArrayRightDivideEquals() {
-		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
-		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		double[][] data1 = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
 		Matrix m = new Matrix(data);
 		Matrix n = new Matrix(data1);
-		Matrix test = m.arrayRightDivideEquals(n);
-		double [][] expected = new double[3][3];
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
-				
-			}
-		}
-		assertArrayEquals(test.getArray(), expected);
+		m.arrayRightDivideEquals(n);
+		double[][] actual = m.getArray();
+		double[][] expected = {{1d/3, 1d/4, 1d/5}, {1d/4, 1d/5, 1d/6}, {1d/5, 1d/6, 1d/7}}; 
+		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 
 	/*
@@ -621,9 +625,8 @@ public class MatrixTest {
 		double[][] data = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
 		Matrix m = new Matrix(data);
 		Matrix n = new Matrix(data1);
-		Matrix test = m.arrayRightDivide(n);
+		double[][] actual = m.arrayRightDivide(n).getArray();
 		double[][] expected = {{1d/3, 1d/4, 1d/5}, {1d/4, 1d/5, 1d/6}, {1d/5, 1d/6, 1d/7}}; 
-		double[][] actual = test.getArray();
 		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
@@ -638,7 +641,7 @@ public class MatrixTest {
 		int[] c = {0,2,4};
 		Matrix m = new Matrix(data);
 		double[][] actual = m.getMatrix(r,c).getArray();
-		for(int i = 0; i < 3; i++) assertArrayEquals(sub[i], actual[i], delta);
+		for(int i = 0; i < 4; i++) assertArrayEquals(sub[i], actual[i], delta);
 		
 		//Test bounds
 		c[0] = 6;
@@ -657,7 +660,7 @@ public class MatrixTest {
 		int j1 = 2;
 		Matrix m = new Matrix(data);
 		double[][] actual = m.getMatrix(r,j0, j1).getArray();
-		for(int i = 0; i < 3; i++) assertArrayEquals(sub[i], actual[i], delta);
+		for(int i = 0; i < 4; i++) assertArrayEquals(sub[i], actual[i], delta);
 		
 		//Test bounds
 		j0 = -1;
@@ -677,7 +680,7 @@ public class MatrixTest {
 		int i1 = 2;
 		Matrix m = new Matrix(data);
 		double[][] actual = m.getMatrix(i0, i1, c).getArray();
-		for(int i = 0; i < 3; i++) assertArrayEquals(sub[i], actual[i], delta);
+		for(int i = 0; i < 4; i++) assertArrayEquals(sub[i], actual[i], delta);
 		
 		//Test bounds
 		i0 = -1;
@@ -708,57 +711,82 @@ public class MatrixTest {
     /*
 	* Tests setMatrix(int[] r, int[] c, Matrix X) 
 	*/
-	@Test
+	@Test (expected=ArrayIndexOutOfBoundsException.class)
 	public void testSetMatrix1()
 	{
-		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
-		double[][] data1 = {{1.0,2.0}, {4.0,5.0}};
-		Matrix a = new Matrix(test);
-        Matrix b = new Matrix(2,2);
-        a.setMatrix(new int[]{0,1}, new int[]{1,0}, b);
-        assertArrayEquals(b.getArray(), data1);
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] data2 = {{-1,0,-1,0,-1},{-1,0,-1,0,-1},{0,0,0,0,0},{-1,0,-1,0,-1}};
+		double[][] expected = {{-1,1,-1,3,-1},{-1,6,-1,8,-1},{10,11,12,13,14},{-1,16,-1,18,-1}};
+		int[] r = {0,1,3};
+		int[] c = {0,2,4};
+		Matrix m = new Matrix(data);
+		Matrix x = new Matrix(data2);
+		m.setMatrix(r,c,x);
+		double[][] actual = m.getArray();
+		for(int i = 0; i < 4; i++) assertArrayEquals(expected[i], actual[i], delta);
+		
+		//Test bounds
+		c[0] = 6;
+		m.setMatrix(r, c, x);
 	}
 	
 	/*
 	* Tests setMatrix(int[] r, int j0, int j1, Matrix X)
 	*/
-	@Test
+	@Test (expected=ArrayIndexOutOfBoundsException.class)
 	public void testSetMatrix2()
 	{
-		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
-		double[][] data1 = {{0.0,2.0}, {0.0,5.0}};
-		Matrix a = new Matrix(test);
-        Matrix b = new Matrix(2,2);
-        a.setMatrix(new int[]{0,1}, 1, 1, b);
-        assertArrayEquals(b.getArray(), data1);
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] data2 = {{-1,-1,-1,0,0},{-1,-1,-1,0,0},{0,0,0,0,0},{-1,-1,-1,0,0}};
+		double[][] expected = {{-1,-1,-1,3,4},{-1,-1,-1,8,9},{10,11,12,13,14},{-1,-1,-1,18,19}};
+		int[] r = {0,1,3};
+		Matrix m = new Matrix(data);
+        Matrix x = new Matrix(data2);
+        m.setMatrix(r, 0, 2, x);
+		double[][] actual = m.getArray();
+		for(int i = 0; i < 4; i++) assertArrayEquals(expected[i], actual[i], delta);
+		
+		//Test bounds
+		m.setMatrix(r, -1, 2, x);
 	}
 	
 	/*
 	* Tests setMatrix(int i0, int i1, int[] c, Matrix X)
 	*/
-	@Test
+	@Test (expected=ArrayIndexOutOfBoundsException.class)
 	public void testSetMatrix3()
 	{
-		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
-		double[][] data1 = {{0.0,0.0}, {4.0,5.0}};
-		Matrix a = new Matrix(test);
-        Matrix b = new Matrix(2,2);
-        a.setMatrix(1, 1, new int[]{0,1}, b);
-        assertArrayEquals(b.getArray(), data1);
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] data2 = {{-1,-1,0,-1,0},{-1,-1,0,-1,0},{-1,-1,0,-1,0},{0,0,0,0,0}};
+		double[][] expected = {{-1,-1,2,-1,4},{-1,-1,7,-1,9},{-1,-1,12,-1,14},{15,16,17,18,19}};
+		int[] c = {0,1,3};
+		Matrix m = new Matrix(data);
+        Matrix x = new Matrix(data2);
+        m.setMatrix(0, 2, c, x);
+		double[][] actual = m.getArray();
+		for(int i = 0; i < 4; i++) assertArrayEquals(expected[i], actual[i], delta);
+		
+		//Test bounds
+		m.setMatrix(-1, 6, c, x);
 	}
 	
 	/*
 	* Tests setMatrix(int i0, int i1, int j0, int j1, Matrix X)	
 	* */
-	@Test
+	@Test (expected=ArrayIndexOutOfBoundsException.class)
 	public void testSetMatrix4()
 	{
-		double[][] test = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
-		double[][] data1 = {{0.0,0.0}, {0.0,5.0}};
-		Matrix a = new Matrix(test);
-        Matrix b = new Matrix(2,2);
-        a.setMatrix(1, 1, 1, 1, b);
-        assertArrayEquals(b.getArray(), data1);
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		double[][] data2 = {{-1,-1,-1,0,0},{-1,-1,-1,0,0},{-1,-1,-1,0,0},{0,0,0,0,0}};
+		double[][] expected = {{-1,-1,-1,3,4},{-1,-1,-1,8,9},{-1,-1,-1,13,14},{15,16,17,18,19}};
+		Matrix m = new Matrix(data);
+        Matrix x = new Matrix(data2);
+        m.setMatrix(0, 2, 0, 2, x);
+		double[][] actual = m.getArray();
+		for(int i = 0; i < 4; i++) assertArrayEquals(expected[i], actual[i], delta);
+		
+		//Test bounds
+		m.setMatrix(-1, 6, -1, 6, x);
 	}
 
 	/*
@@ -770,13 +798,9 @@ public class MatrixTest {
 		double[][] data = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
 		Matrix m = new Matrix(data);
 		Matrix test = m.times(2.0);
-		double[][] actual = new double[m.getRowDimension()][m.getColumnDimension()];
-		for (int i = 0; i < m.getRowDimension(); i++) {
-			for (int j = 0; j < m.getColumnDimension(); j++) {
-				actual[i][j] = data[i][j]*2.0;
-			}
-		}
-		assertArrayEquals(test.getArray(), actual);
+		double[][] actual = test.getArray();
+		double[][] expected = {{2,4,6},{8,10,12},{14,16,18}};
+		for(int i = 0; i < 3; i++) assertArrayEquals(expected[i], actual[i], delta);
 	}
 	
 	/*
@@ -785,19 +809,29 @@ public class MatrixTest {
 	 */
 	@Test
 	public void testTimes2() {
-		double[][] data = {{1.0,2.0,3.0},{4.0,5.0,6.0},{7.0,8.0,9.0}};
+		double[][] data = {{1.0,2.0,3.0},{4.0,5.0,6.0}};
 		Matrix m = new Matrix(data);
-		double[][] test = {{2.0,3.0,4.0},{5.0,6.0,7.0},{8.0,9.0,10.0}};
+		double[][] test = {{2.0,3.0},{4.0,5.0},{6.0,7.0}};
 		Matrix B = new Matrix(test);
-		Matrix expected = m.times(B);
-		double[][] prod = new double[m.getRowDimension()][B.getColumnDimension()];
-		for (int i = 0; i < m.getRowDimension(); i++) {
-			for (int j = 0; j < B.getColumnDimension(); j++) {
-				for (int k = 0; k < m.getColumnDimension(); k++) {
-					prod[i][j] += m.getArray()[i][k] * B.getArray()[k][j];
-				}
-			}
-		}
-		assertArrayEquals(prod, expected.getArray());
+		double[][] actual = m.times(B).getArray();
+		double[][] expected = {{28.0,34.0},{64.0,79.0}};
+		for(int i = 0; i < 2; i++) assertArrayEquals(expected[i], actual[i], delta);
+	}
+	
+	/*
+	 * Test read
+	 */
+	@Test
+	public void testRead() {
+		String data = "-0.10  0.20  0.30  0.40 \r\n 1.10 -1.20  1.30  1.40 \r\n" +
+			" 2.10  2.20 -2.30  2.40 \r\n 3.10  3.20  3.30 -3.40 \r\n\r\n";
+		double[][] expected = {{-0.1,0.2,0.3,0.4},{1.1,-1.2,1.3,1.4},{2.1,2.2,-2.3,2.4},{3.1,3.2,3.3,-3.4}};
+		
+		BufferedReader input = new BufferedReader(new StringReader(data));
+		try {
+			Matrix m = Matrix.read(input);
+			double[][] actual = m.getArray();
+			for(int i = 0; i < 4; i++) assertArrayEquals(expected[i], actual[i], delta);
+		} catch(IOException e) {fail(e.toString());}
 	}
 }

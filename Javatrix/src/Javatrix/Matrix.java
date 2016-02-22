@@ -1,6 +1,8 @@
 package Javatrix;
 
 import java.text.NumberFormat;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -17,12 +19,12 @@ public class Matrix
 	 * 
 	 * @param	A - 2D array from which to construct the matrix
 	 */
-	public Matrix(double[][] A) throws java.lang.IllegalArgumentException
+	public Matrix(double[][] A) throws IllegalArgumentException
 	{
 		this.m = A.length;
 		this.n = A[0].length;
 		for (int i = 1; i < m; i++) {
-			if(A[i].length != n) throw new java.lang.IllegalArgumentException();
+			if(A[i].length != n) throw new IllegalArgumentException();
 		}
 		this.matrix = new double[m][n];
 		for (int i = 0; i < m; i++) {
@@ -113,7 +115,7 @@ public class Matrix
 		int row = arr.length;
 		int col = arr[0].length;
 		for (int i = 1; i < row; i++) {
-			if(arr[i].length != col) throw new java.lang.IllegalArgumentException();
+			if(arr[i].length != col) throw new IllegalArgumentException();
 		}
 		double[][] cp = new double[row][col];
 		for (int i = 0; i < row; i++) {
@@ -338,6 +340,16 @@ public class Matrix
 	}
 	
 	/**
+	 * print - Print the matrix to stdout, with width w and d decimal places.
+	 * 
+	 * @param w - column width
+	 * @param d - Number of digits after the decimal.
+	 */
+	public void print(int w, int d) {
+		print(new PrintWriter(System.out, true), w, d);
+	}
+	
+	/**
 	 * plus - Return the sum of the matrix and parameter matrix.
 	 * @param B - Matrix to be added to current matrix. Must be same dimension.
 	 * @return A + B
@@ -519,13 +531,13 @@ public class Matrix
 	 * @return Matrix (product)
 	 */
 	public Matrix times(double s) {
-		double[][] prod = new double[m][n];
+		Matrix prod = new Matrix(m, n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				prod[i][j] = matrix[i][j]*s;
+				prod.set(i, j, matrix[i][j]*s);
 			}
 		}
-		return new Matrix(prod);
+		return prod;
 	}
 	
 	/**
@@ -534,16 +546,18 @@ public class Matrix
 	 * @param Matrix B
 	 * @return Matrix product
 	 */
-	public Matrix times(Matrix B) {
-		double[][] prod = new double[m][B.getColumnDimension()];
+	public Matrix times(Matrix B) throws IllegalArgumentException {
+		if(B.getRowDimension() != n) throw new IllegalArgumentException();
+
+		Matrix prod = new Matrix(m, B.getColumnDimension());
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < B.getColumnDimension(); j++) {
 				for (int k = 0; k < n; k++) {
-					prod[i][j] += matrix[i][k] * B.getArray()[k][j];
+					prod.set(i, j, matrix[i][k] * B.get(k, j) + prod.get(i, j));
 				}
 			}
 		}
-		return new Matrix(prod);
+		return prod;
 	}
 	
 	/**
@@ -809,7 +823,6 @@ public class Matrix
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int[] r, int[] c, Matrix X) {
 		for(int i = 0; i < r.length; i++)
@@ -826,7 +839,6 @@ public class Matrix
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int[] r, int j0, int j1, Matrix X) {
 		for(int i = 0; i < r.length; i++)
@@ -842,7 +854,6 @@ public class Matrix
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int i0, int i1, int[] c, Matrix X) {
 		for(int i = 0; i < c.length; i++)
@@ -858,7 +869,6 @@ public class Matrix
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int i0, int i1, int j0, int j1, Matrix X) {
 		if(i0 < 0 || i1 >= m) throw new ArrayIndexOutOfBoundsException();
@@ -869,5 +879,47 @@ public class Matrix
 				matrix[i][j] = X.get(i, j);
 			}
 		}
+	}
+	
+	/**
+	 * read - Reads in a matrix from file
+	 */
+	public static Matrix read(BufferedReader input) throws IOException {
+		int cols = 0, rows = 1;
+		Matrix m = null;
+		String data = "";
+
+		//Determine number of columns
+		String line = input.readLine();
+		String[] split = line.split(" ");
+		for(int i = 0; i < split.length; i++) {
+			if(split[i].equals("")) continue;
+			cols++;
+		}
+		data += line + "\n";
+		
+		//Determine number of rows
+		while((line = input.readLine()) != null) {
+			data += line + "\n";
+			if(line.equals("")) break;
+			rows++;
+		}
+		
+		m = new Matrix(rows, cols);
+		
+		split = data.split("\n");
+		if(split.length > rows) return null;
+		for(int i = 0; i < split.length; i++) {
+			String[] nums = split[i].split(" ");
+			int k = 0;
+			for(int j = 0; j < nums.length; j++) {
+				if(nums[j].equals("")) continue;
+				else if(k > cols) return null;
+				m.set(i, k, Double.parseDouble(nums[j]));
+				k++;
+			}
+		}
+		
+		return m;
 	}
 }
