@@ -883,6 +883,8 @@ public class Matrix
 	
 	/**
 	 * read - Reads in a matrix from file
+	 * 
+	 * @param input - stream to be read from. Contains matrix rows on each line.
 	 */
 	public static Matrix read(BufferedReader input) throws IOException {
 		int cols = 0, rows = 1;
@@ -921,31 +923,5 @@ public class Matrix
 		}
 		
 		return m;
-	}
-	
-	/**
-	 * read - read a matrix from a stream
-	 * 
-	 * @param input - stream to be read from. Contains matrix rows on each line.
-	 */
-	public static Matrix read(java.io.BufferedReader input) throws java.io.IOException
-	{
-		String data;
-		double[][] numbers;
-		int count = 0;
-		while(data = input.readLine() != null)
-		{
-			String[] values = data.split(' ');
-			double[] values2 = new double[values.size()];
-			for(int i =0; i < values2.size(); i++)
-			{
-				values2[i] = Double.parseDouble(values[i]);
-			}
-			numbers[count] = values2;
-			count++;
-			
-		}
-	Matrix m = new Matrix(numbers);
-	return m;
 	}
 }
