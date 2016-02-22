@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.PrintStream;
@@ -65,6 +66,23 @@ public class MatrixTest {
 		m = new Matrix(vals, 3);
 	}
 	
+	
+	/*
+	 * Tests the clone method. 
+	 */
+	@Test
+	public void testClone()
+	{
+		double[][] data = {{0,1,2,3,4},{5,6,7,8,9},{10,11,12,13,14},{15,16,17,18,19}};
+		Matrix a = new Matrix(data);
+		Object b = a.clone();
+		Matrix a2 = (Matrix) b;
+		assertTrue(Arrays.deepEquals(data, a.getArray()));
+	    assertTrue(Arrays.deepEquals(data, a2.getArray()));
+	    assertEquals(a.getRowDimension(), a2.getRowDimension());
+	    assertEquals(a.getColumnDimension(), a2.getColumnDimension());
+	}
+	
 	/*
 	 * Test the constructor that initializes a matrix of zeros.
 	 */
@@ -90,12 +108,13 @@ public class MatrixTest {
 	/*
 	 * Test constructWithCopy
 	 * 
-	 * doesnt like this either
+	 * 
 	 */
 	@Test
 	public void testConstructWithCopy() {
 		double[][] data = {{0.1,0.2,0.3,0.4},{1.1,1.2,1.3,1.4},{2.1,2.2,2.3,2.4},{3.1,3.2,3.3,3.4}};
-		//Matrix mat = constructWithCopy(data);
+		Matrix mat = Matrix.constructWithCopy(data);
+		assertTrue(Arrays.deepEquals(data, mat.getArray()));
 	}
 	
 	/*
@@ -442,7 +461,7 @@ public class MatrixTest {
 	/*
 	 * Tests the timesequals method.
 	 * 
-	 * doesnt work
+	 * 
 	 */
 	@Test
 	public void testTimesEquals()
@@ -456,7 +475,7 @@ public class MatrixTest {
 		{
 			for(int j = 0; j < 3; j++)
 			{
-				expected[i][j] = m.getArray()[i][j] * 3.0;
+				expected[i][j] = data[i][j] * 3.0;
 			}
 		}
 		assertArrayEquals(actual, expected);
@@ -497,7 +516,29 @@ public class MatrixTest {
 		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
 		Matrix m = new Matrix(data);
 		Matrix n = new Matrix(data1);
-		Matrix test = n.arrayLeftDivide(m);
+		Matrix test = m.arrayLeftDivide(n);
+		double [][] expected = new double[3][3];
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				expected[i][j] = m.getArray()[i][j] / n.getArray()[i][j];
+				
+			}
+		}
+		assertArrayEquals(test.getArray(), expected);
+	}
+	
+	/*
+	 * Tests arrayLeftDivide
+	 * 
+	 * doesnt work
+	 */
+	@Test
+	public void testArrayRightDivide() {
+		double[][] data = {{3.0,4.0,5.0},{4.0,5.0,6.0},{5.0,6.0,7.0}};
+		double[][] data1 = {{1.0,1.0,1.0},{1.0,1.0,1.0},{1.0,1.0,1.0}};
+		Matrix m = new Matrix(data);
+		Matrix n = new Matrix(data1);
+		Matrix test = m.arrayRightDivide(n);
 		double [][] expected = new double[3][3];
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
