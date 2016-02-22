@@ -1,7 +1,11 @@
 package Javatrix;
 
+import java.text.NumberFormat;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.Random;
-
 
 public class Matrix 
 {
@@ -15,12 +19,12 @@ public class Matrix
 	 * 
 	 * @param	A - 2D array from which to construct the matrix
 	 */
-	public Matrix(double[][] A) throws java.lang.IllegalArgumentException
+	public Matrix(double[][] A) throws IllegalArgumentException
 	{
 		this.m = A.length;
 		this.n = A[0].length;
 		for (int i = 1; i < m; i++) {
-			if(A[i].length != n) throw new java.lang.IllegalArgumentException();
+			if(A[i].length != n) throw new IllegalArgumentException();
 		}
 		this.matrix = new double[m][n];
 		for (int i = 0; i < m; i++) {
@@ -64,9 +68,9 @@ public class Matrix
 			this.m = m;
 			this.n = vals.length/m;
 			this.matrix = new double[m][n];
-			for (int i = 0; i < m; i++) {
-				for (int j = 0; j < n; j++) {
-					matrix[i][j] = vals[i*n+j];
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					matrix[j][i] = vals[i*m+j];
 				}
 			}
 		}
@@ -107,9 +111,12 @@ public class Matrix
 	 * 
 	 * @return Matrix copy
 	 */
-	public static Matrix constructWithCopy(double[][] arr) {
+	public static Matrix constructWithCopy(double[][] arr) throws IllegalArgumentException {
 		int row = arr.length;
 		int col = arr[0].length;
+		for (int i = 1; i < row; i++) {
+			if(arr[i].length != col) throw new IllegalArgumentException();
+		}
 		double[][] cp = new double[row][col];
 		for (int i = 0; i < row; i++) {
 			for (int j  = 0; j < col; j++) {
@@ -142,6 +149,7 @@ public class Matrix
 	public Object clone() {
 		return this.copy();
 	}
+	
 	/**
 	 * getArrayCopy - returns a copy of the internal 2D array of the matrix.
 	 * 
@@ -254,56 +262,91 @@ public class Matrix
 	/**
 	 * print - Print the matrix to stdout.
 	 * 
-	 * @param format - java.text.NumberFormat
-	 * @param width - represents how many columns to print. 
+	 * @param format - The NumberFormat object to use
+	 * @param width - represents the field width
 	 */
-	public void print(java.text.NumberFormat format, int width)
+	public void print(NumberFormat format, int width)
 	{
-		for (int i = 0; i < m; i++) 
-		{
-			for (int j = 0; j < width; j++) 
-			{
-				System.out.print(format.format(matrix[i][j]));
-			}
-			System.out.println();
-		}
+		print(new PrintWriter(System.out, true), format, width);
 	}
 	
 	/**
-	 * print - Print the matrix to stdout.
+	 * print - Print the matrix to output.
 	 * 
-	 * @param format - java.text.NumberFormat
-	 * @param width - represents how many columns to print. 
+	 * @param output - The PrintWriter to write to.
+	 * @param format - The NumberFormat object to use.
+	 * @param width - The column width. 
 	 */
 	public void print(java.io.PrintWriter output, java.text.NumberFormat format, int width)
 	{
+		if(width <= 0) return;
+		
+		DecimalFormat df = (DecimalFormat)format;
+		if(width == 1) {
+			df.setMaximumFractionDigits(0);
+			df.setMaximumIntegerDigits(1);
+		} else if(width == 2) {
+			df.setMaximumFractionDigits(0);
+			df.setMaximumIntegerDigits(2);
+		} else if(width == 3) {
+			df.setMaximumFractionDigits(1);
+			df.setMaximumIntegerDigits(1);
+		} else if(width >= 4) {
+			int fractDigits = df.getMaximumFractionDigits();
+			int intDigits = df.getMaximumIntegerDigits();
+			if(fractDigits + intDigits > width-1) {
+				df.setMaximumFractionDigits(width/2);
+				df.setMaximumIntegerDigits(width/2);
+			}
+		}
+		
 		for (int i = 0; i < m; i++) 
 		{
-			for (int j = 0; j < width; j++) 
+			for (int j = 0; j < n; j++) 
 			{
-				output.print(format.format(matrix[i][j]));
+				if(matrix[i][j] < 0)
+					output.format("%" + (width+1) + "s", format.format(matrix[i][j]));
+				else
+					output.format(" %" + width + "s", format.format(matrix[i][j]));
 			}
 			output.println();
 		}
+		output.println();
 	}
 	
 	/**
 	 * print - Print the matrix to the output stream. 
 	 * 
-	 * @param output
-	 * @param w
-	 * @param d
+	 * @param output - The output stream.
+	 * @param w - Column width.
+	 * @param d - Number of digits after the decimal.
 	 */
 	public void print(java.io.PrintWriter output, int w, int d)
 	{
+		if(w <= 0 || d < 0) return;
+		
 		for (int i = 0; i < m; i++) 
 		{
-			for (int j = 0; j < w; j++) 
+			for (int j = 0; j < n; j++) 
 			{
-				output.print(String.format("%." + d +"f ", (matrix[i][j])));
+				if(matrix[i][j] < 0)
+					output.print(String.format("%" + (w+1) + "." + d + "f ", (matrix[i][j])));
+				else
+					output.print(String.format(" %" + w + "." + d + "f ", (matrix[i][j])));
 			}
 			output.println();
 		}
+		output.println();
+	}
+	
+	/**
+	 * print - Print the matrix to stdout, with width w and d decimal places.
+	 * 
+	 * @param w - column width
+	 * @param d - Number of digits after the decimal.
+	 */
+	public void print(int w, int d) {
+		print(new PrintWriter(System.out, true), w, d);
 	}
 	
 	/**
@@ -313,14 +356,14 @@ public class Matrix
 	 */
 	public Matrix plus(Matrix B)
 	{
-		Matrix C = new Matrix(new double[m][n]);
 		if(B.m == this.m && B.n == this.n)
 		{
+			Matrix C = new Matrix(new double[m][n]);
 			for(int i = 0; i < m; i++)
 			{
 				for(int j = 0; j < n; j++)
 				{
-					C.getArray()[i][j] = matrix[i][j] + B.getArray()[i][j];
+					C.set(i, j, matrix[i][j] + B.get(i, j));
 				}
 			}
 			return C;
@@ -340,14 +383,14 @@ public class Matrix
 	 */
 	public Matrix minus(Matrix B)
 	{
-		Matrix C = new Matrix(new double[m][n]);
 		if(B.m == this.m && B.n == this.n)
 		{
+			Matrix C = new Matrix(new double[m][n]);
 			for(int i = 0; i < m; i++)
 			{
 				for(int j = 0; j < n; j++)
 				{
-					C.getArray()[i][j] = matrix[i][j] - B.getArray()[i][j];
+					C.set(i, j, matrix[i][j] - B.get(i, j));
 				}
 			}
 			return C;
@@ -363,7 +406,7 @@ public class Matrix
 	/**
 	 * minusEquals - Return the difference of the matrix and parameter matrix.
 	 * 				-Changes class matrix to returned value. 
-	 * @param B - Matrix to be substracted from the current matrix. Must be same dimension.
+	 * @param B - Matrix to be subtracted from the current matrix. Must be same dimension.
 	 * @return A - B
 	 */
 	public Matrix minusEquals(Matrix B)
@@ -374,7 +417,7 @@ public class Matrix
 			{
 				for(int j = 0; j < n; j++)
 				{
-					matrix[i][j] = matrix[i][j] - B.getArray()[i][j];
+					matrix[i][j] -= B.get(i, j);
 				}
 			}
 			return this;
@@ -402,7 +445,7 @@ public class Matrix
 			{
 				for(int j = 0; j < n; j++)
 				{
-					matrix[i][j] = matrix[i][j] + B.getArray()[i][j];
+					matrix[i][j] += B.get(i, j);
 				}
 			}
 			return this;
@@ -423,21 +466,9 @@ public class Matrix
 	public static Matrix identity(int m, int n)
 	{
 		double[][] data = new double[m][n];
-		int spot = 0;
-		for(int i = 0; i < m; i++)
+		for(int i = 0; i < m && i < n; i++)
 		{
-			for(int j = 0; j < n; j++)
-			{
-				if(j == spot)
-				{
-					data[i][j] = 1;
-				}
-				else
-				{
-					data[i][j] = 0;
-				}
-			}
-			spot++;
+			data[i][i] = 1;
 		}
 		return new Matrix(data);
 		
@@ -450,12 +481,11 @@ public class Matrix
 	 */
 	public Matrix timesEquals(double s)
 	{
-		
 		for(int i = 0; i < m; i++)
 		{
 			for(int j = 0; j < n; j++)
 			{
-				matrix[i][j] = matrix[i][j] * s;
+				matrix[i][j] *= s;
 			}
 		}
 		return this;
@@ -468,14 +498,14 @@ public class Matrix
 	 * @return Product Matrix
 	 */
 	public Matrix arrayTimes(Matrix B) {
-		double[][] b = B.getArray();
-		double[][] prod = new double[B.getRowDimension()][B.getColumnDimension()];
-		for (int i = 0; i < B.getRowDimension(); i++) {
-			for (int j  = 0; j < B.getColumnDimension(); j++) {
-				prod[i][j] = matrix[i][j] * b[i][j];
+		if(m != B.getRowDimension() || n != B.getColumnDimension()) return null;
+		Matrix C = new Matrix(m, n);
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				C.set(i, j, matrix[i][j] * B.get(i, j));
 			}
 		}
-		return new Matrix(prod);
+		return C;
 	}
 	
 	/**
@@ -485,14 +515,13 @@ public class Matrix
 	 * @return Product Matrix
 	 */
 	public Matrix arrayTimesEquals(Matrix B) {
-		double[][] b = B.getArray();
-		double[][] prod = new double[B.getRowDimension()][B.getColumnDimension()];
-		for (int i = 0; i < B.getRowDimension(); i++) {
-			for (int j  = 0; j < B.getColumnDimension(); j++) {
-				matrix[i][j] = matrix[i][j] * b[i][j];
+		if(m != B.getRowDimension() || n != B.getColumnDimension()) return null;
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				matrix[i][j] *= B.get(i, j);
 			}
 		}
-		return new Matrix(prod);
+		return this;
 	}
 	
 	/**
@@ -502,13 +531,13 @@ public class Matrix
 	 * @return Matrix (product)
 	 */
 	public Matrix times(double s) {
-		double[][] prod = new double[m][n];
+		Matrix prod = new Matrix(m, n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				prod[i][j] = matrix[i][j]*s;
+				prod.set(i, j, matrix[i][j]*s);
 			}
 		}
-		return new Matrix(prod);
+		return prod;
 	}
 	
 	/**
@@ -517,16 +546,18 @@ public class Matrix
 	 * @param Matrix B
 	 * @return Matrix product
 	 */
-	public Matrix times(Matrix B) {
-		double[][] prod = new double[m][B.getColumnDimension()];
+	public Matrix times(Matrix B) throws IllegalArgumentException {
+		if(B.getRowDimension() != n) throw new IllegalArgumentException();
+
+		Matrix prod = new Matrix(m, B.getColumnDimension());
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < B.getColumnDimension(); j++) {
 				for (int k = 0; k < n; k++) {
-					prod[i][j] += matrix[i][k] * B.getArray()[k][j];
+					prod.set(i, j, matrix[i][k] * B.get(k, j) + prod.get(i, j));
 				}
 			}
 		}
-		return new Matrix(prod);
+		return prod;
 	}
 	
 	/**
@@ -553,9 +584,10 @@ public class Matrix
 	public double normInF()
 	{
 		double sum = 0;
-		double temp = 0;
+		double temp;
 		for(int i = 0; i < m; i++)
 		{
+			temp = 0;
 			for(int j = 0; j < n; j++)
 			{
 				temp += Math.abs(matrix[i][j]);
@@ -564,22 +596,21 @@ public class Matrix
 			{
 				sum = temp;
 			}
-			temp = 0;
 		}
 		return sum;
 	}
 	
 	/**
 	 * norm1-returns one norm of a matrix.
-	 * @return maximum column sum.
-	 * test
+	 * @return largest sum of absolute values from each column.
 	 */
 	public double norm1()
 	{
 		double sum = 0;
-		double temp = 0;
+		double temp;
 		for(int i = 0; i < n; i++)
 		{
+			temp = 0;
 			for(int j = 0; j < m; j++)
 			{
 				temp += Math.abs(matrix[j][i]);
@@ -588,7 +619,6 @@ public class Matrix
 			{
 				sum = temp;
 			}
-			temp = 0;
 		}
 		return sum;
 	}
@@ -600,9 +630,9 @@ public class Matrix
 	 */
 	public double[] getColumnPackedCopy() {
 		double[] copy = new double[m*n];
-		for (int i = 0; i < getRowDimension(); i++) {
-			for (int j = 0; j < getColumnDimension(); j++) {
-				copy[j * m + i] = matrix[i][j]; 
+		for (int i = 0; i < getColumnDimension(); i++) {
+			for (int j = 0; j < getRowDimension(); j++) {
+				copy[i * m + j] = matrix[j][i];
 			}
 		}
 		return copy;
@@ -639,7 +669,7 @@ public class Matrix
 	}
 	
 	/**
-	 * transpose - performs matrix transposes
+	 * transpose - performs matrix transpose
 	 * 
 	 * @return A'
 	 */
@@ -659,13 +689,14 @@ public class Matrix
 	 * @return A.\B
 	 */
 	public Matrix arrayLeftDivide(Matrix B) {
-		double[][] C = this.getArray();
+		if(m != B.getRowDimension() || n != B.getColumnDimension()) return null;
+		Matrix C = new Matrix(m, n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				C[i][j] = B.getArray()[i][j] / matrix[i][j];
+				C.set(i, j, B.get(i, j) / matrix[i][j]);
 			}
 		}
-		return new Matrix(C);
+		return C;
 	}
 	
 	/**
@@ -674,9 +705,10 @@ public class Matrix
 	 * @return A.\B
 	 */
 	public Matrix arrayLeftDivideEquals(Matrix B) {
+		if(m != B.getRowDimension() || n != B.getColumnDimension()) return null;
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				matrix[i][j] = B.getArray()[i][j] / matrix[i][j];
+				matrix[i][j] = B.get(i, j) / matrix[i][j];
 			}
 		}
 		return this;
@@ -685,31 +717,32 @@ public class Matrix
 	/**
 	 * arrayRightDivide - element by element right division (C = A./B)
 	 * 
-	 * @return A.\B
+	 * @return A./B
 	 */
 	public Matrix arrayRightDivide(Matrix B) {
-		double[][] C = this.getArray();
+		if(m != B.getRowDimension() || n != B.getColumnDimension()) return null;
+		Matrix C = new Matrix(m, n);
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				C[i][j] = matrix[i][j] / B.getArray()[i][j];
+				C.set(i, j, matrix[i][j] / B.get(i, j));
 			}
 		}
-		return new Matrix(C);
+		return C;
 	}
 	
 	/**
 	 * arrayRightDivideEquals - element by element right division in place (A = A./B)
 	 * 
-	 * @return A.\B
+	 * @return A./B
 	 */
 	public Matrix arrayRightDivideEquals(Matrix B) {
+		if(m != B.getRowDimension() || n != B.getColumnDimension()) return null;
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				matrix[i][j] = matrix[i][j] / B.getArray()[i][j];
+				matrix[i][j] /= B.get(i, j);
 			}
 		}
 		return this;
-		
 	}
 	
 	/**
@@ -717,7 +750,12 @@ public class Matrix
 	 * 
 	 * @return Matrix (submatrix)
 	 */
-	public Matrix getMatrix(int[] r, int[] c) {
+	public Matrix getMatrix(int[] r, int[] c) throws ArrayIndexOutOfBoundsException {
+		for(int i = 0; i < r.length; i++)
+			if(r[i] < 0 || r[i] >= m) throw new ArrayIndexOutOfBoundsException();
+		for(int i = 0; i < c.length; i++)
+			if(c[i] < 0 || c[i] >= n) throw new ArrayIndexOutOfBoundsException();
+
 		double[][] sub = new double[r.length][c.length];
 		for (int i = 0; i < r.length; i++) {
 			for (int j = 0; j < c.length; j++) {
@@ -733,8 +771,11 @@ public class Matrix
 	 * @return Matrix (submatrix)
 	 */
 	public Matrix getMatrix(int[] r, int j0, int j1) {
-		int size = j1 - j0 + 1;
-		double[][] sub = new double[r.length][size];
+		for(int i = 0; i < r.length; i++)
+			if(r[i] < 0 || r[i] >= m) throw new ArrayIndexOutOfBoundsException();
+		if(j0 < 0 || j1 >= n) throw new ArrayIndexOutOfBoundsException();
+
+		double[][] sub = new double[r.length][j1-j0+1];
 		for (int i = 0; i < r.length; i++) {
 			for (int j = j0; j <= j1; j++) {
 				sub[i][j] = matrix[r[i]][j];
@@ -749,8 +790,11 @@ public class Matrix
 	 * @return Matrix (submatrix)
 	 */
 	public Matrix getMatrix(int i0, int i1, int[] c) {
-		int size = i1 - i0 + 1;
-		double[][] sub = new double[size][c.length];
+		for(int i = 0; i < c.length; i++)
+			if(c[i] < 0 || c[i] >= n) throw new ArrayIndexOutOfBoundsException();
+		if(i0 < 0 || i1 >= m) throw new ArrayIndexOutOfBoundsException();
+
+		double[][] sub = new double[i1-i0+1][c.length];
 		for (int i = i0; i <= i1; i++) {
 			for (int j = 0; j < c.length; j++) {
 				sub[i][j] = matrix[i][c[j]];
@@ -765,9 +809,10 @@ public class Matrix
 	 * @return Matrix (submatrix)
 	 */
 	public Matrix getMatrix(int i0, int i1, int j0, int j1) {
-		int rSize = i1 - i0 + 1;
-		int cSize = j1 - j0 + 1;
-		double[][] sub = new double[rSize][cSize];
+		if(i0 < 0 || i1 >= m) throw new ArrayIndexOutOfBoundsException();
+		if(j0 < 0 || j1 >= n) throw new ArrayIndexOutOfBoundsException();
+
+		double[][] sub = new double[i1-i0+1][j1-j0+1];
 		for (int i = i0; i <= i1; i++) {
 			for (int j = j0; j <= j1; j++) {
 				sub[i][j] = matrix[i][j];
@@ -778,50 +823,104 @@ public class Matrix
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int[] r, int[] c, Matrix X) {
+		for(int i = 0; i < r.length; i++)
+			if(r[i] < 0 || r[i] >= m) throw new ArrayIndexOutOfBoundsException();
+		for(int i = 0; i < c.length; i++)
+			if(c[i] < 0 || c[i] >= n) throw new ArrayIndexOutOfBoundsException();
+
 		for (int i = 0; i < r.length; i++) {
 			for (int j = 0; j < c.length; j++) {
-				X.matrix[r[i]][c[j]] = this.getArray()[r[i]][c[j]];
+				matrix[r[i]][c[j]] = X.get(r[i], c[j]);
 			}
 		}
 	}
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int[] r, int j0, int j1, Matrix X) {
+		for(int i = 0; i < r.length; i++)
+			if(r[i] < 0 || r[i] >= m) throw new ArrayIndexOutOfBoundsException();
+		if(j0 < 0 || j1 >= n) throw new ArrayIndexOutOfBoundsException();
+
 		for (int i = 0; i < r.length; i++) {
 			for (int j = j0; j <= j1; j++) {
-				X.matrix[r[i]][j] = this.getArray()[r[i]][j];
+				matrix[r[i]][j] = X.get(r[i], j);
 			}
 		}
 	}
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int i0, int i1, int[] c, Matrix X) {
+		for(int i = 0; i < c.length; i++)
+			if(c[i] < 0 || c[i] >= n) throw new ArrayIndexOutOfBoundsException();
+		if(i0 < 0 || i1 >= m) throw new ArrayIndexOutOfBoundsException();
+
 		for (int i = i0; i <= i1; i++) {
 			for (int j = 0; j < c.length; j++) {
-				X.matrix[i][c[j]] = this.getArray()[i][c[j]];
+				matrix[i][c[j]] = X.get(i, c[j]);
 			}
 		}
 	}
 	
 	/**
 	 * setMatrix - sets a submatrix
-	 * 
 	 */
 	public void setMatrix(int i0, int i1, int j0, int j1, Matrix X) {
+		if(i0 < 0 || i1 >= m) throw new ArrayIndexOutOfBoundsException();
+		if(j0 < 0 || j1 >= n) throw new ArrayIndexOutOfBoundsException();
+
 		for (int i = i0; i <= i1; i++) {
 			for (int j = j0; j <= j1; j++) {
-				X.matrix[i][j] = this.getArray()[i][j];
+				matrix[i][j] = X.get(i, j);
 			}
 		}
+	}
+	
+	/**
+	 * read - Reads in a matrix from file
+	 */
+	public static Matrix read(BufferedReader input) throws IOException {
+		int cols = 0, rows = 1;
+		Matrix m = null;
+		String data = "";
+
+		//Determine number of columns
+		String line = input.readLine();
+		String[] split = line.split(" ");
+		for(int i = 0; i < split.length; i++) {
+			if(split[i].equals("")) continue;
+			cols++;
+		}
+		data += line + "\n";
+		
+		//Determine number of rows
+		while((line = input.readLine()) != null) {
+			data += line + "\n";
+			if(line.equals("")) break;
+			rows++;
+		}
+		
+		m = new Matrix(rows, cols);
+		
+		split = data.split("\n");
+		if(split.length > rows) return null;
+		for(int i = 0; i < split.length; i++) {
+			String[] nums = split[i].split(" ");
+			int k = 0;
+			for(int j = 0; j < nums.length; j++) {
+				if(nums[j].equals("")) continue;
+				else if(k > cols) return null;
+				m.set(i, k, Double.parseDouble(nums[j]));
+				k++;
+			}
+		}
+		
+		return m;
 	}
 	
 	/**
